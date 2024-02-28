@@ -1,74 +1,85 @@
+//videoElements
+const localVideo = document.querySelector(".local-video");
+const remoteVideo = document.querySelector(".remote-video");
+
+//buttonElements
+const createOfferBtn = document.querySelector(".create-offer-btn");
+const createAnsBtn = document.querySelector(".create-ans-btn");
+const addAnswerBtn = document.querySelector(".add-ans-btn");
+
+//socket.io
+const socket = io();
+let offer;
+let ans;
+socket.on("offer", (sdp) => {
+  offer = sdp;
+});
+socket.on("ans", (sdp) => {
+  ans = sdp;
+});
+socket.on('success', (successMsg)=>{
+  alert(successMsg);
+})
+
+//webrtc Specific variables
 const peerConnection = new RTCPeerConnection();
 let localStream;
 let remoteStream;
-const socket = io();
 
 const init = async () => {
+  
+  //localVideo
   localStream = await navigator.mediaDevices.getUserMedia({
     video: true,
     audio: false,
   });
-  const localVideo = document.querySelector(".user-1-stream");
+
   localVideo.srcObject = localStream;
-  
-  localStream.getTracks().forEach(track => {
-      peerConnection.addTrack(track, localStream)
-    }); 
-    
-    peerConnection.ontrack = (e) => {
-    remoteStream = new MediaStream;
-    console.log(e);
-    document.querySelector(".user-2-stream").srcObject = remoteStream
-    console.log("inside ontrack")
-      remoteStream.addTrack(e.track);
-      console.log(remoteStream);
-  }
+  localStream.getTracks().forEach((track) => {
+    peerConnection.addTrack(track, localStream);
+  });
+
+  //remoteVideo 
+  peerConnection.ontrack = (e) => {
+    remoteStream = new MediaStream();
+    remoteVideo.srcObject = remoteStream;
+    remoteStream.addTrack(e.track);
+  };
 };
 
 const createOffer = async () => {
+  //Note 1: onicecandidate event listener trigger when the offer is created
+  peerConnection.onicecandidate = (e) => {
+    socket.emit("offer", JSON.stringify(peerConnection.localDescription));
+  };
+  const offer = await peerConnection.createOffer();
+  await peerConnection.setLocalDescription(offer);
 
-    // onicecandidate event trigger when the the offer is created
-    peerConnection.onicecandidate = (e) => {
-        document.querySelector(".sdp-offer-input").value = JSON.stringify(peerConnection.localDescription);
-        socket.emit("offer", JSON.stringify(peerConnection.localDescription));
-    }
-    const offer = await peerConnection.createOffer();
-    await peerConnection.setLocalDescription(offer)
-    console.log(offer);
-
-}
-let offer;
-let ans;
-socket.on("offer", (sdp) => {
-  // console.log("inside socket offer sdp: ", sdp)
-  offer = sdp;
-});
-socket.on("ans", (sdp) => {
-  console.log("inside socket ans sdp: ", sdp)
-  ans = sdp;
-});
+  //notifying user
+  alert("offer created");
+};
 
 const createAnswer = async () => {
-  // const offer = document.querySelector(".sdp-offer-input").value;
-
+    //Note 2: onicecandidate event listener trigger when the ans is created
   peerConnection.onicecandidate = (e) => {
-    document.querySelector(".sdp-ans-input").value = JSON.stringify(peerConnection.localDescription);
     socket.emit("ans", JSON.stringify(peerConnection.localDescription));
-  }
+  };
   await peerConnection.setRemoteDescription(JSON.parse(offer));
   const ans = await peerConnection.createAnswer();
   await peerConnection.setLocalDescription(ans);
-}
+
+    //notifying user
+    alert("answer created");
+};
 
 const addAnswer = async () => {
-  console.log()
-  // const ans = document.querySelector(".sdp-ans-input").value;
+  console.log();
   await peerConnection.setRemoteDescription(JSON.parse(ans));
-  console.log("Connection Established Successfully")
-}
-
+  socket.emit('success')
+};
 
 init();
-document.querySelector(".create-offer-btn").addEventListener("click", createOffer);
-document.querySelector(".create-ans-btn").addEventListener("click", createAnswer);
-document.querySelector(".add-ans-btn").addEventListener("click", addAnswer);
+
+createOfferBtn.addEventListener("click", createOffer);
+createAnsBtn.addEventListener("click", createAnswer);
+addAnswerBtn.addEventListener("click", addAnswer);

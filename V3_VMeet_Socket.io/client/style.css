@@ -22,13 +22,13 @@ body {
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
-.stream-container {
+.video-container {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 20px;
 }
 
-.user-1-stream, .user-2-stream {
+.local-video, .remote-video {
     width: 100%;
     height: auto;
     border-radius: 8px;
@@ -36,9 +36,6 @@ body {
     background-color: #ddd; /* Placeholder color */
 }
 
-.sinaling-container {
-    margin-top: 20px;
-}
 
 /* Styling for buttons */
 button {
@@ -56,25 +53,9 @@ button:hover {
     background-color: #0056b3;
 }
 
-/* Styling for textareas */
-textarea {
-    width: 100%;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    resize: none;
-    font-size: 14px;
-    margin-bottom: 10px;
-}
-
-/* Additional styling for labels */
-label {
-    font-weight: bold;
-}
-
 /* Responsive styles */
 @media (max-width: 768px) {
-    .stream-container {
+    .video-container {
         grid-template-columns: 1fr;
     }
 }
