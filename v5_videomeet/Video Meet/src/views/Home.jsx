@@ -1,6 +1,7 @@
 import React from 'react'
 import { Link } from "react-router-dom";
-import ShowZeroBadge from '../Components/tempBadge';
+import MultiUsersCard from '../Components/multiUsersCard';
+import VideoCallLayout from '../Components/tempMultiUserCard';
 
 
 const Home = () => {
@@ -18,7 +19,8 @@ const Home = () => {
                 </li>
               </ul>
             </nav>
-            <ShowZeroBadge/>
+            <MultiUsersCard/>
+            {/* <VideoCallLayout/> */}
             {/* other elements */}
           </div>
         </>

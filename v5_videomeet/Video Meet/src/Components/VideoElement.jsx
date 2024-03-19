@@ -1,108 +1,39 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Card from '@mui/joy/Card';
 import CardCover from '@mui/joy/CardCover';
-import CardContent from '@mui/joy/CardContent';
-import Typography from '@mui/joy/Typography';
 import styled from 'styled-components';
-import Fab from '@mui/material/Fab';
 import { useGlobalState } from '../ContextAPI/GlobalStateContext';
 import { IoMdMic } from "react-icons/io";
 import { IoMdMicOff } from "react-icons/io";
+import Avatar from '@mui/joy/Avatar';
+import MultiUsersCard from './multiUsersCard';
 
-const VideoElement = () => {
 
-    const { globalState, updateGlobalState } = useGlobalState();
-    const smallSizeVideoRef = useRef(null)
+const VideoElement = ({ small }) => {
 
-    useEffect(() => {
-        if (globalState.Video) {
-            smallSizeVideoRef.current.play();
-        } else {
-            smallSizeVideoRef.current.pause();
-        }
-    }, [globalState.Video])
+    const { globalState } = useGlobalState();
 
-    const picRandomColor = () => {
-        return globalState.profileBackgroundColors[Math.floor(Math.random() * globalState.profileBackgroundColors.length)];
-    };
-    console.log(picRandomColor());
+    const smallVideoStyling = {
+        cardStyling: { minWidth: '234px', width: '234px', height: '132px', position: 'absolute', inset: 'auto 5% 5% auto', zIndex: '1', background: !globalState.Video ? '#4A4E51' : 'none' },
+        cardCoverStyling: { display: !globalState.Video ? 'none' : null },
+        cardContentAvatarStyling: { position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', display: !globalState.Video ? null : 'none' },
+        cardContentUserNameStyling: { position: 'absolute', bottom: '4%', left: '4%', color: 'white', fontFamily: 'inter', fontWeight: '600' },
+        cardContentMicStyling: { position: 'absolute', top: '4%', right: '4%' },
+    }
 
-    var overlay = true;
-
+    const bigVideoStyling = {
+        cardStyling: { minWidth: '234px', width: '70vw', height: '95%', background: globalState.remoteVideo ? null : '#4A4E51' },
+        cardCoverStyling: { display: globalState.remoteVideo ? null : 'none' },
+        cardContentAvatarStyling: { position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', display: globalState.remoteVideo ? 'none' : null },
+        cardContentUserNameStyling: { position: 'absolute', bottom: '2%', left: '2%', color: 'white', fontFamily: 'inter', fontWeight: '600' },
+        cardContentMicStyling: { position: 'absolute', top: '2%', right: '2%' },
+    }
 
     return (
-        <Wrapper className='videoElement' color={picRandomColor()}>
-            <Card className='smallVideoMainCard' component="li" sx={{ minWidth: '234px', width: '234px', height: '132px', position: 'absolute', inset: 'auto 5% 5% auto', zIndex: '1' }}>
-                <CardCover>
-                    <video
-                        autoPlay
-                        loop
-                        muted
-                        poster="https://assets.codepen.io/6093409/river.jpg"
-                        ref={smallSizeVideoRef}
-                    >
-                        <source
-                            src="https://assets.codepen.io/6093409/river.mp4"
-                            type="video/mp4"
-                        />
-                    </video>
-                </CardCover>
-                <CardContent sx={{ minWidth: '234px', width: '234px', height: '132px' }}>
-                    <Typography
-                        level="body-lg"
-                        fontWeight="lg"
-                        textColor='white'
-                        fontSize="16px"
-                        mt={{ xs: 10, sm: 10.5 }}
-                    >
-                        {globalState.name}
-                    </Typography>
-                    <Typography
-                        level="body-lg"
-                        fontWeight="lg"
-                        textColor='white'
-                        sx={{ position: 'absolute', top: '4%', right: '4%' }}
-                    >
-                        <Fab size="small" className={`micIcon icon`}>
-                            {globalState.Mic ? <IoMdMic /> : <IoMdMicOff />}
-                        </Fab>
-                    </Typography>
-                </CardContent>
-            </Card>
-
-            {!globalState.Video ? <Card className='smallVideoOverlayCard' sx={{ minWidth: '234px', width: '234px', height: '132px', position: 'absolute', inset: 'auto 5% 5% auto', zIndex: '1', background: '#4A4E51' }}>
-                <div className='profileContainer'>
-                    {globalState.profileImg ? <img className='image' src="./Man.webp" alt="profile picture" /> : <div className='text'><span>{globalState.name[0].toUpperCase()}</span></div>}
-                </div>
-                <CardContent sx={{ minWidth: '234px', width: '234px', height: '132px' }}>
-                    <Typography
-                        level="body-lg"
-                        fontWeight="500"
-                        textColor='white'
-                        fontSize="16px"
-                        mt={{ xs: 9, sm: 9 }}
-                    >
-                        {globalState.name}
-                    </Typography>
-                    <Typography
-                        level="body-lg"
-                        fontWeight="lg"
-                        textColor='white'
-                        sx={{ position: 'absolute', top: '4%', right: '4%' }}
-                    >
-                        <Fab size="small" className={`micIcon icon`}>
-                            {globalState.Mic ? <IoMdMic /> : <IoMdMicOff />}
-                        </Fab>
-                    </Typography>
-                </CardContent>
-            </Card> : null}
-
-            <Card className='BigVideoMainCard' component="li" sx={{ minWidth: '234px', width: '70vw', height: '95%', background: overlay ? '#4A4E51' : 'none' }}>
-                <div className='BigprofileContainer'>
-                    {globalState.profileImg ? <img className='image' src="./Man.webp" alt="profile picture" /> : <div className='bigVideoProfileText'><span>{globalState.name[0].toUpperCase()}</span></div>}
-                </div>
-                <CardCover sx={{ display: overlay ? 'none' : true }}>
-                    <video
+        <Wrapper>
+            {globalState.existingUsers <= 2 && (small ? <Card className='smallVideoMainCard' component="li" sx={smallVideoStyling.cardStyling}>
+                <CardCover sx={smallVideoStyling.cardCoverStyling}>
+                    <video className='localVideo'
                         autoPlay
                         loop
                         muted
@@ -114,28 +45,46 @@ const VideoElement = () => {
                         />
                     </video>
                 </CardCover>
-                <CardContent sx={{ minWidth: '234px', width: '234px', height: '132px' }}>
-                    <Typography
-                        level="body-lg"
-                        fontWeight="lg"
-                        textColor='white'
-                        sx={{ position: 'absolute', bottom: '2%', left: '2%' }}
-                    >
+                <div className='cardContent'>
+                    <div className='avatarDiv' style={smallVideoStyling.cardContentAvatarStyling}>
+                        <Avatar alt={globalState.name} size="md" />
+                    </div>
+                    <div className='userNameDiv' style={smallVideoStyling.cardContentUserNameStyling}>
                         {globalState.name}
-                    </Typography>
-                    <Typography
-                        level="body-lg"
-                        fontWeight="lg"
-                        textColor='white'
-                        sx={{ position: 'absolute', top: '2%', right: '2%' }}
-                    >
-                        <Fab size="small" className={`micIcon icon`}>
-                            {globalState.Mic ? <IoMdMic /> : <IoMdMicOff />}
-                        </Fab>
-                    </Typography>
-                </CardContent>
+                    </div>
+                    <div className='micDiv' style={smallVideoStyling.cardContentMicStyling}>
+                        <Avatar sx={{ background: '#3E4044', color: 'white' }} color='white' alt={'Mic'} size="sm" >{globalState.Mic ? <IoMdMic /> : <IoMdMicOff />}</Avatar>
+                    </div>
+                </div>
             </Card>
-
+                : <Card className={`BigVideoMainCard`} component="li" sx={bigVideoStyling.cardStyling}>
+                    <CardCover sx={bigVideoStyling.cardCoverStyling}>
+                        <video
+                            autoPlay
+                            loop
+                            muted
+                            poster="https://assets.codepen.io/6093409/river.jpg"
+                        >
+                            <source
+                                src="https://assets.codepen.io/6093409/river.mp4"
+                                type="video/mp4"
+                            />
+                        </video>
+                    </CardCover>
+                    <div className='cardContent'>
+                        <div className='avatarDiv' style={bigVideoStyling.cardContentAvatarStyling}>
+                            <Avatar alt={globalState.name} size="lg" />
+                        </div>
+                        <div className='userNameDiv' style={bigVideoStyling.cardContentUserNameStyling}>
+                            {globalState.name}
+                        </div>
+                        <div className='micDiv' style={bigVideoStyling.cardContentMicStyling}>
+                            <Avatar sx={{ background: '#3E4044', color: 'white' }} alt={'Mic'} size="sm" >{globalState.remoteAudio ? <IoMdMic /> : <IoMdMicOff />}</Avatar>
+                        </div>
+                    </div>
+                </Card>)
+            }
+            {globalState.existingUsers > 2 && <MultiUsersCard/>}
         </Wrapper>
     );
 }
@@ -150,39 +99,6 @@ display:grid;
 justify-items: center;
 align-items: center;
 
-.icon {
-    align-self: center !important;
-    color: white !important;
-    background-color: #3c4043 !important;
-  }
 
-.profileContainer{
-    width:100%;
-    height:100%;
-}
-
-.bigVideoProfileText, .text, .image{
-    position: absolute;
-    inset: 50% auto auto 50%;
-    transform: translate(-50%, -50%);
-    width: 40px;
-    height: 40px;
-    display: grid;
-    justify-content: center;
-    align-items: center;
-    align-content: center;
-    justify-items: center;
-    font-size: 2rem;
-    font-weight: 500;
-    padding: 1.8rem;
-    border-radius: 50%;
-    color: white;
-    background:${props => props.color}
-}
-
-.bigVideoProfileText{
-    padding: 2.8rem;
-    font-size: 3rem;
-}
 
 `;

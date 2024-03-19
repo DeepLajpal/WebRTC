@@ -11,14 +11,9 @@ export const GlobalStateProvider = ({ children }) => {
     viewPeople: true,
     name: "Deep Lajpal",
     profileImg: false,
-    profileBackgroundColors: [
-      "#AED9E0", // Soft Blue
-      "#C7E5C9", // Pale Green
-      "#E6E6FA", // Lavender
-      "#D3D3D3", // Warm Gray
-      "#F5F5DC"  // Creamy Beige
-    ],
-    isRemoteStreamComing:false
+    remoteVideo:false,
+    remoteAudio:false,
+    existingUsers:3
   });
 
   const updateGlobalState = (newState) => {

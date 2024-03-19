@@ -2,8 +2,7 @@ import React, { useState } from 'react';
 import { styled } from '@mui/system';
 import { Badge as BaseBadge, badgeClasses } from '@mui/base/Badge';
 
-export default function ShowZeroBadge({ icon, top, right, background }) {
-
+export default function ShowBadge({ icon, top, right, background }) {
 
     return (
         <Badge badgeContent={5} top={top} right={right} background={background} showZero>

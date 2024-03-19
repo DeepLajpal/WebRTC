@@ -11,33 +11,23 @@ import ListItemText from '@mui/material/ListItemText';
 import InboxIcon from '@mui/icons-material/MoveToInbox';
 import MailIcon from '@mui/icons-material/Mail';
 import { useGlobalState } from '../ContextAPI/GlobalStateContext';
+import styled from 'styled-components';
+import Avatar from '@mui/joy/Avatar';
 
-export default function TempDrawer({people}) {
-  const { globalState, updateGlobalState } = useGlobalState();
 
-
+export default function ShowDrawer() {
+  const { globalState } = useGlobalState();
 
   const DrawerList = (
     <Box sx={{ width: 250 }} role="presentation">
-      <List>
-        {['Inbox', 'Starred', 'Send email', 'Drafts'].map((text, index) => (
-          <ListItem key={text} disablePadding>
-            <ListItemButton>
-              <ListItemIcon>
-                {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-              </ListItemIcon>
-              <ListItemText primary={text} />
-            </ListItemButton>
-          </ListItem>
-        ))}
-      </List>
+      <DrawerHeading>Users: </DrawerHeading>
       <Divider />
       <List>
-        {['All mail', 'Trash', 'Spam'].map((text, index) => (
+        {['Aman', 'Deep', 'Rohit', 'Ramesh', 'Suresh', 'Mukesh'].map((text, index) => (
           <ListItem key={text} disablePadding>
             <ListItemButton>
               <ListItemIcon>
-                {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
+                <Avatar alt={text} size="sm" />
               </ListItemIcon>
               <ListItemText primary={text} />
             </ListItemButton>
@@ -55,3 +45,10 @@ export default function TempDrawer({people}) {
     </div>
   );
 }
+
+const DrawerHeading = styled.h3`
+
+padding:2%
+
+
+`

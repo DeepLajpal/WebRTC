@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState } from 'react';
 import { MdCallEnd } from "react-icons/md";
 import { IoMdMic } from "react-icons/io";
 import { IoMdMicOff } from "react-icons/io";
@@ -8,10 +8,10 @@ import { BsPeopleFill } from "react-icons/bs";
 import { BsPeople } from "react-icons/bs";
 import Fab from '@mui/material/Fab';
 import styled from 'styled-components';
-import TempDrawer from './tempDrawer';
+import TempDrawer from './showDrawer';
 import { useGlobalState } from '../ContextAPI/GlobalStateContext';
 import { useNavigate } from 'react-router-dom'
-import ShowZeroBadge from './tempBadge';
+import ShowBadge from './showBadge';
 
 
 const Footer = () => {
@@ -40,7 +40,13 @@ const Footer = () => {
     }
   }
 
-  var time = '10:30';
+  const date = new Date();
+  const options = {
+    hour: '2-digit',
+    minute: '2-digit'
+  };
+  const time = date.toLocaleTimeString('en-US', options);
+  
   var meetingId = '74589962';
   return (
     <footer>
@@ -63,7 +69,7 @@ const Footer = () => {
           </Fab>
         </div>
         <div className='rightGrid'>
-          <ShowZeroBadge top={"10%"} right={"15%"} background={"#5F6368"} icon={
+          <ShowBadge top={"10%"} right={"15%"} background={"#5F6368"} icon={
             <Fab className='peopleIcon' onClick={(e) => handleToggle("viewPeople")} sx={{ zIndex: '5000' }}>
               {globalState.viewPeople ? <BsPeople /> : <BsPeopleFill style={{ color: "#8AB4F8", }} />}
               <TempDrawer />
