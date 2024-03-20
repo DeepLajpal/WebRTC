@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import Card from '@mui/joy/Card';
 import CardCover from '@mui/joy/CardCover';
 import styled from 'styled-components';
-import { useGlobalState } from '../ContextAPI/GlobalStateContext';
+import { useGlobalState } from '../../ContextAPI/GlobalStateContext';
 import { IoMdMic } from "react-icons/io";
 import { IoMdMicOff } from "react-icons/io";
 import Avatar from '@mui/joy/Avatar';
@@ -13,7 +13,7 @@ const MultiUsersCard = () => {
     const { globalState } = useGlobalState();
 
     const smallVideoStyling = {
-        cardStyling: { minWidth: '234px', width: '234px', minHeight: '132px', height: '132px' },
+        cardStyling: { minWidth: '234px', width: '234px', minHeight: '132px', height: '132px', background: !globalState.Video ? '#4A4E51' : 'none'  },
         cardCoverStyling: { display: !globalState.Video ? 'none' : null },
     }
 
@@ -23,7 +23,7 @@ const MultiUsersCard = () => {
 
                 return <Card key={index} className='smallVideoMainCard' component="li" sx={smallVideoStyling.cardStyling}>
                     <CardCover sx={smallVideoStyling.cardCoverStyling}>
-                        {/* <video className='localVideo'
+                        <video className='localVideo'
                             autoPlay
                             loop
                             muted
@@ -33,11 +33,11 @@ const MultiUsersCard = () => {
                             src="https://assets.codepen.io/6093409/river.mp4"
                             type="video/mp4"
                             />
-                        </video> */}
+                        </video>
                     </CardCover>
                     <div className='cardContent' style={{ height: '100%', width: '100%' }}>
                         <div className='micDiv'>
-                            <Avatar sx={{ background: '#3E4044', color: 'white' }} color='white' alt={'Mic'} size="sm" >{globalState.remoteAudio ? <IoMdMic /> : <IoMdMicOff />}</Avatar>
+                            <Avatar sx={{ background: '#3E4044', color: 'white' }} color='white' alt={'Mic'} size="sm" >{globalState.Mic ? <IoMdMic /> : <IoMdMicOff />}</Avatar>
                         </div>
                         <div className='avatarDiv'>
                             <Avatar alt={user.name} size="md" />
@@ -80,6 +80,8 @@ grid-auto-rows: 132px;
     }
     .userNameDiv{
         justify-self: start;
+        color: white;
+        z-index: 1;
     }
 }
 

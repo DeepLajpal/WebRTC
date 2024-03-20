@@ -13,7 +13,7 @@ export const GlobalStateProvider = ({ children }) => {
     profileImg: false,
     remoteVideo:false,
     remoteAudio:false,
-    existingUsers:3
+    existingUsers:2
   });
 
   const updateGlobalState = (newState) => {

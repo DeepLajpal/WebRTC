@@ -1,13 +1,13 @@
 import React from 'react';
-import Footer from '../Components/footer.jsx';
-import VideoElement from '../Components/videoElement.jsx';
+import Footer from '../Components/Video Meet/getFooter.jsx';
+import GetVideoContainers from '../Components/Video Meet/getVideoContainers.jsx';
 import styled from 'styled-components';
 
 const Stream = () => {
   return (
     <Wrapper>
-      <VideoElement small={false}/>
-      <VideoElement small={true}/>
+      <GetVideoContainers small={false}/>
+      <GetVideoContainers small={true}/>
       <Footer />
     </Wrapper>
   );

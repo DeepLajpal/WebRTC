@@ -1,8 +1,11 @@
 import React from 'react'
 
+
 const UserConfig = () => {
   return (
-    <div>UserConfig</div>
+    <Wrapper>
+      <div className='userConfigContainer'></div>
+    </Wrapper>
   )
 }
 

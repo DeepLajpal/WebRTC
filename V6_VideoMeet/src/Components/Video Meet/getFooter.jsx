@@ -8,10 +8,10 @@ import { BsPeopleFill } from "react-icons/bs";
 import { BsPeople } from "react-icons/bs";
 import Fab from '@mui/material/Fab';
 import styled from 'styled-components';
-import TempDrawer from './showDrawer';
-import { useGlobalState } from '../ContextAPI/GlobalStateContext';
+import TempDrawer from '../Common/showDrawer';
+import { useGlobalState } from '../../ContextAPI/GlobalStateContext';
 import { useNavigate } from 'react-router-dom'
-import ShowBadge from './showBadge';
+import ShowBadge from '../Common/showBadge';
 
 
 const Footer = () => {
