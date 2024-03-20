@@ -5,30 +5,29 @@ import {
   createBrowserRouter,
   RouterProvider,
 } from "react-router-dom";
-import Home from './views/Home.jsx';
-import UserConfig from './views/UserConfig.jsx';
-import Stream from './views/Stream.jsx';
+import HomePage from './views/HomePage.jsx';
+import StreamPage from './views/StreamPage.jsx';
 import ErrorPage from './views/ErrorPage.jsx';
 import { GlobalStateProvider } from './ContextAPI/GlobalStateContext.jsx';
-
+import AuthPage from './views/AuthPage.jsx';
 
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <Home />,
+    element: <HomePage />,
     errorElement: <ErrorPage />,
   },
   {
     path: "Home/",
-    element: <Home />,
+    element: <HomePage />,
   },
   {
-    path: "userConfig/",
-    element: <UserConfig />,
+    path: "Auth/",
+    element: <AuthPage />,
   },
   {
     path: "Stream/",
-    element: <Stream />,
+    element: <StreamPage />,
   },
 ]);
 

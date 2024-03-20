@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import KeyboardIcon from '@mui/icons-material/Keyboard';
 import { Button } from '@mui/material';
 import VideocamIcon from '@mui/icons-material/Videocam';
-const GetMeetingDetails = () => {
+const GetMeetingInfo = () => {
     return (
         <Wrapper>
                 <div className='mainDiv'>
@@ -25,7 +25,7 @@ const GetMeetingDetails = () => {
 
                         <div className='meetingIdInputDiv'>
                             <div className='logoDiv'>
-                                <KeyboardIcon />
+                                <KeyboardIcon sx={{ position: 'relative', top: '3px' }} />
                             </div>
                             <div className='inputDiv'>
                                 <input type="text" placeholder='Enter a code' />
@@ -43,14 +43,14 @@ const GetMeetingDetails = () => {
     );
 }
 
-export default GetMeetingDetails
+export default GetMeetingInfo
 
 
 const Wrapper = styled.div`
 
 
   width:100%;
-  height: 90.9%;
+  height: 80%;
   // border: 2px solid red;
   display:grid;
   place-items:center;

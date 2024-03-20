@@ -24,7 +24,7 @@ const ShowNav = ({ logoName }) => {
         setAnchorElUser(null);
     };
     return (
-        <AppBar position="static">
+        <AppBar position="static" sx={{height:'fit-content'}}>
             <Container maxWidth="xl">
                 <Toolbar disableGutters>
                     <Typography
@@ -40,6 +40,7 @@ const ShowNav = ({ logoName }) => {
                             letterSpacing: '.3rem',
                             color: 'inherit',
                             textDecoration: 'none',
+                            textTransform: 'uppercase',
                         }}
                     >
                         {logoName}
