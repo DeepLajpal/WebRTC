@@ -9,19 +9,26 @@ import Container from '@mui/material/Container';
 import Avatar from '@mui/material/Avatar';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
+import GetModal from '../Common/getModal';
 
 const settings = ['View Profile', 'Logout'];
 
 const ShowNav = ({ logoName }) => {
 
     const [anchorElUser, setAnchorElUser] = React.useState(null);
+    const [showModal, setShowModal] = React.useState(false);
+
 
     const handleOpenUserMenu = (event) => {
         setAnchorElUser(event.currentTarget);
     };
 
-    const handleCloseUserMenu = () => {
+    const handleCloseUserMenu = (event) => {
         setAnchorElUser(null);
+        if(event.currentTarget.textContent === "View Profile"){
+            setShowModal(()=>true)
+            console.dir(event.currentTarget.textContent);
+        }
     };
     return (
         <AppBar position="static" sx={{height:'fit-content'}}>
@@ -71,11 +78,12 @@ const ShowNav = ({ logoName }) => {
                             onClose={handleCloseUserMenu}
                         >
                             {settings.map((setting) => (
-                                <MenuItem key={setting} onClick={handleCloseUserMenu}>
+                                <MenuItem key={setting} onClick={(event)=>handleCloseUserMenu(event)}>
                                     <Typography textAlign="center">{setting}</Typography>
                                 </MenuItem>
                             ))}
                         </Menu>
+                        {/* <GetModal showM={showModal}/> */}
                     </Box>
                 </Toolbar>
             </Container>
