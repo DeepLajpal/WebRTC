@@ -6,8 +6,7 @@ import styled from 'styled-components';
 const Stream = () => {
   return (
     <Wrapper>
-      <GetVideoContainers small={false}/>
-      <GetVideoContainers small={true}/>
+      <GetVideoContainers/>
       <Footer />
     </Wrapper>
   );

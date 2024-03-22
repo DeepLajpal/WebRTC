@@ -21,9 +21,9 @@ const DualVideoCards = ({ small }) => {
     }
 
     const bigVideoStyling = {
-        cardStyling: { minWidth: '70vw', width: '70vw', height: '95%', background: globalState.remoteVideo ? null : '#4A4E51' },
-        cardCoverStyling: { display: globalState.remoteVideo ? null : 'none' },
-        cardContentAvatarStyling: { position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', display: globalState.remoteVideo ? 'none' : null },
+        cardStyling: { minWidth: '70vw', width: '70vw', height: '95%', background: !globalState.Video ? '#4A4E51' : 'none' },
+        cardCoverStyling: { display: !globalState.Video ? 'none' : null },
+        cardContentAvatarStyling: { position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', display: !globalState.Video ? null : 'none' },
         cardContentUserNameStyling: { position: 'absolute', bottom: '2%', left: '2%', color: 'white', fontFamily: 'inter', fontWeight: '600' },
         cardContentMicStyling: { position: 'absolute', top: '2%', right: '2%' },
     }
@@ -78,7 +78,7 @@ const DualVideoCards = ({ small }) => {
                         {globalState.name}
                     </div>
                     <div className='micDiv' style={bigVideoStyling.cardContentMicStyling}>
-                        <Avatar sx={{ background: '#3E4044', color: 'white' }} alt={'Mic'} size="sm" >{globalState.remoteAudio ? <IoMdMic /> : <IoMdMicOff />}</Avatar>
+                        <Avatar sx={{ background: '#3E4044', color: 'white' }} alt={'Mic'} size="sm" >{globalState.Mic ? <IoMdMic /> : <IoMdMicOff />}</Avatar>
                     </div>
                 </div>
             </Card>}

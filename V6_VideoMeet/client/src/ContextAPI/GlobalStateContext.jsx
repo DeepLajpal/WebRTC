@@ -13,7 +13,7 @@ export const GlobalStateProvider = ({ children }) => {
     profileImg: false,
     remoteVideo:false,
     remoteAudio:false,
-    existingUsers:2,
+    existingUsers:1,
     tabValue:0,
   });
 

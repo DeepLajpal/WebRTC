@@ -7,19 +7,30 @@ import MultiUsersCard from './getMultiUsersCard';
 import DualVideoCards from './getDualVideoCards';
 
 
-const GetVideoContainers = ({ small }) => {
+const GetVideoContainers = () => {
 
     const { globalState } = useGlobalState();
 
-    return (
-        <Wrapper>
-            {globalState.existingUsers <= 2 && (
-                <>
+    const handleVideoContainers = () => {
+
+        switch (globalState.existingUsers) {
+            case 1:
+                return <DualVideoCards small={false} />
+            case 2:
+                return (<>
                     <DualVideoCards small={false} />
                     <DualVideoCards small={true} />
                 </>
-            )}
-            {globalState.existingUsers > 2 && <MultiUsersCard />}
+                )
+            default:
+                return <MultiUsersCard />;
+        }
+
+    }
+
+    return (
+        <Wrapper>
+            {handleVideoContainers()}
         </Wrapper>
     );
 }
