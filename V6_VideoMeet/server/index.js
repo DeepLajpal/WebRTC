@@ -1,23 +1,16 @@
 const express = require('express');
-const socket = require('socket.io');
-const bodyParser = require('body-parser');
-const userRoutes = require('./routes/userRoute');
+const http = require('http');
+const socketIo = require('socket.io');
+
+const PORT = process.env.PORT || 4001;
 
 const app = express();
-const server = app.listen(3000, () => {
-    console.log("Server is running, http://localhost:3000/");
+const server = http.createServer(app);
+const io = socketIo(server, {
+  cors:{
+    origin:"*",
+  },
 });
-
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
-app.set('view engine', 'ejs');
-app.set('views', './views');
-
-app.use(express.static('public'));
-
-app.use('/', userRoutes);
-
-const io = socket(server);
 
 var existingConnections = [];
 
@@ -78,5 +71,6 @@ io.on("connection", (socket) => {
 
 });
 
-
-
+server.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});

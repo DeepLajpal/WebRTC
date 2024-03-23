@@ -19,7 +19,8 @@ const GetMeetingInfo = () => {
     }
   };
   const handleNewMeeting = (e) => {
-    var meetingId = parseInt(Math.floor(Math.random() * 100000000).toString().padEnd(8, '0'));
+    var meetingId = Math.floor(Math.random() * 100000000).toString().padEnd(8, '0');
+    updateGlobalState({ tabValue: 1 });
     console.log('meetingId: ', meetingId)
   }
 
