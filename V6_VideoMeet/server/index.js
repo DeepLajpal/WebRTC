@@ -15,7 +15,10 @@ const io = socketIo(server, {
 var existingConnections = [];
 
 io.on("connection", (socket) => {
-
+    socket.on("test socket by aman", (data)=> {
+        console.log("test socket by aman", data);
+    });
+    
     socket.on("users_info_to_signaling_server", (incommingConnections)=>{
         const foundIncommingUserInExistingConnections = existingConnections
             .find(existingConnection => {

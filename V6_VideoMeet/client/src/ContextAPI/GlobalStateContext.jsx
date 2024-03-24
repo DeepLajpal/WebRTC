@@ -9,7 +9,7 @@ export const GlobalStateProvider = ({ children }) => {
     Mic: true,
     Video: true,
     viewPeople: true,
-    name: "No User",
+    name: null,
     meetingId: null,
     profileImg: false,
     remoteVideo:false,

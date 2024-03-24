@@ -10,6 +10,7 @@ const GetMeetingInfo = ({ handleTabChange }) => {
   const [inputValue, setInputValue] = useState('');
 
   const meetingIdInput = useRef(null);
+  const { updateGlobalState } = useGlobalState()
 
   const handleChange = (event) => {
     const value = event.target.value;
@@ -20,7 +21,7 @@ const GetMeetingInfo = ({ handleTabChange }) => {
   const handleNewMeeting = (e) => {
     var meetingId = Math.floor(Math.random() * 100000000).toString().padEnd(8, '0');
     handleTabChange(1);
-    console.log('meetingId: ', meetingId)
+    updateGlobalState({ meetingId: meetingId });
   }
 
   const handleJoin = (event) => {
@@ -28,6 +29,7 @@ const GetMeetingInfo = ({ handleTabChange }) => {
 
     if (value.length === 8) {
       handleTabChange(1);
+      updateGlobalState({ name: inputValue });
       console.log('meetingId: ', value);
     }
     else if (value.length === 0) {
