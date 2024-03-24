@@ -4,21 +4,27 @@ import ShowNav from '../Components/Video Meet/getNav';
 import GetMeetingInfo from '../Components/Video Meet/getMeetingInfo';
 import IconTabs from '../Components/Common/showTab';
 import GetUserInfo from '../Components/Video Meet/getUserInfo';
-import { useGlobalState } from '../ContextAPI/GlobalStateContext';
 
 const Home = () => {
 
-  const { globalState} = useGlobalState();
+  const [tabValue, setTabValue] = React.useState(0);
+  const handleTabChange = (newValue) => {
+    setTabValue(newValue);
+  };
   return (
     <Wrapper>
       <div className='startDiv'>
         <ShowNav logoName={"Video Meet"} />
       </div>
       <div className='middleDiv'>
-        <IconTabs />
+        <IconTabs handleTabChange={handleTabChange} tabValue={tabValue}/>
       </div>
       <div className='endDiv'>
-        {!globalState.tabValue ? <GetMeetingInfo /> : <GetUserInfo />}
+        {
+          !tabValue
+            ? <GetMeetingInfo handleTabChange={handleTabChange}/>
+            : <GetUserInfo handleTabChange={handleTabChange}/>
+        }
       </div>
     </Wrapper>
   );

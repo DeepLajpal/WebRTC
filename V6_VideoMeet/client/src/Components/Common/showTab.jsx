@@ -6,16 +6,15 @@ import ArticleIcon from '@mui/icons-material/Article';
 import PersonPinIcon from '@mui/icons-material/PersonPin';
 import { useGlobalState } from '../../ContextAPI/GlobalStateContext';
 
-export default function IconTabs() {
-  const {globalState, updateGlobalState} = useGlobalState();
-
+export default function IconTabs({ handleTabChange, tabValue }) {
+  
   const handleChange = (event, newValue) => {
   //  console.log(newValue); //it gives the 2 toggle values 0 and 1
-    updateGlobalState({tabValue: newValue})
+    handleTabChange(newValue);
   };
 
   return (
-    <Tabs value={globalState.tabValue} onChange={handleChange} aria-label="icon tabs example">
+    <Tabs value={tabValue} onChange={handleChange} aria-label="icon tabs example">
       <Tab icon={<ArticleIcon />} aria-label="phone" /> //selected when newValue = 0 
       <Tab icon={<PersonPinIcon />} aria-label="person" /> //selected when newValue = 1
     </Tabs>

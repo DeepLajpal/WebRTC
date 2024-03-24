@@ -5,10 +5,9 @@ import { Button } from '@mui/material';
 import VideocamIcon from '@mui/icons-material/Videocam';
 import { useGlobalState } from '../../ContextAPI/GlobalStateContext';
 
-const GetMeetingInfo = () => {
+const GetMeetingInfo = ({ handleTabChange }) => {
 
   const [inputValue, setInputValue] = useState('');
-  const { updateGlobalState } = useGlobalState();
 
   const meetingIdInput = useRef(null);
 
@@ -20,7 +19,7 @@ const GetMeetingInfo = () => {
   };
   const handleNewMeeting = (e) => {
     var meetingId = Math.floor(Math.random() * 100000000).toString().padEnd(8, '0');
-    updateGlobalState({ tabValue: 1 });
+    handleTabChange(1);
     console.log('meetingId: ', meetingId)
   }
 
@@ -28,7 +27,7 @@ const GetMeetingInfo = () => {
     const value = meetingIdInput.current.value;
 
     if (value.length === 8) {
-      updateGlobalState({ tabValue: 1 });
+      handleTabChange(1);
       console.log('meetingId: ', value);
     }
     else if (value.length === 0) {
