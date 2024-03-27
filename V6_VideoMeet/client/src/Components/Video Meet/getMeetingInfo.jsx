@@ -20,7 +20,7 @@ const GetMeetingInfo = () => {
   };
   const handleNewMeeting = (e) => {
     var meetingId = Math.floor(Math.random() * 100000000).toString().padEnd(8, '0');
-    updateGlobalState({ tabValue: 1 });
+    updateGlobalState({ tabValue: 1, meetingId });
     console.log('meetingId: ', meetingId)
   }
 
@@ -28,7 +28,7 @@ const GetMeetingInfo = () => {
     const value = meetingIdInput.current.value;
 
     if (value.length === 8) {
-      updateGlobalState({ tabValue: 1 });
+      updateGlobalState({ tabValue: 1, meetingId: value });
       console.log('meetingId: ', value);
     }
     else if (value.length === 0) {

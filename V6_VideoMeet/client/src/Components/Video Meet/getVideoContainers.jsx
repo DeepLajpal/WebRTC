@@ -5,6 +5,7 @@ import { useGlobalState } from '../../ContextAPI/GlobalStateContext';
 
 import MultiUsersCard from './getMultiUsersCard';
 import DualVideoCards from './getDualVideoCards';
+import SocketConfig from '../../socket';
 
 
 const GetVideoContainers = () => {
@@ -15,11 +16,11 @@ const GetVideoContainers = () => {
 
         switch (globalState.existingUsers) {
             case 1:
-                return <DualVideoCards small={false} />
+                return <DualVideoCards small={false}/>
             case 2:
                 return (<>
-                    <DualVideoCards small={false} />
-                    <DualVideoCards small={true} />
+                    <DualVideoCards small={false}/>
+                    <DualVideoCards small={true}/>
                 </>
                 )
             default:
@@ -30,7 +31,9 @@ const GetVideoContainers = () => {
 
     return (
         <Wrapper>
-            {handleVideoContainers()}
+            {/* {handleVideoContainers()} */}
+             <MultiUsersCard />
+            <SocketConfig/>
         </Wrapper>
     );
 }

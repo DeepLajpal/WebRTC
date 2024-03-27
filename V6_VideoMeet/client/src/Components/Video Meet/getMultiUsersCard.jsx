@@ -10,29 +10,58 @@ import Avatar from '@mui/joy/Avatar';
 
 const MultiUsersCard = () => {
 
-    const { globalState } = useGlobalState();
+    const { globalState, updateGlobalState } = useGlobalState();
+    const localVideoRef = useRef(null);
+    const videoRefs = useRef([]);
+    
+    useEffect(() => {
+        // Update the global state with references to video elements
+        updateGlobalState({ localVideoRef, videoRefs: videoRefs.current });
+        console.log("global")
+    }, [globalState.localVideoRef, videoRefs.current]);
+
+    const handleVideoRef = (index) => (ref) => {
+        // Store reference to the video element
+        videoRefs.current[index] = ref;
+        console.log(index, ": ", videoRefs.current[index]);
+    };
 
     const smallVideoStyling = {
-        cardStyling: { minWidth: '234px', width: '234px', minHeight: '132px', height: '132px', background: !globalState.Video ? '#4A4E51' : 'none'  },
+        cardStyling: { minWidth: '234px', width: '234px', minHeight: '132px', height: '132px', background: !globalState.Video ? '#4A4E51' : 'none' },
         cardCoverStyling: { display: !globalState.Video ? 'none' : null },
     }
 
     return (
         <Wrapper>
-            {[{ name: "user1" }, { name: "user2" }, { name: "user3" }, { name: "user1" }, { name: "user2" }, { name: "user3" }].map((user, index) => {
-
+            <Card className='smallVideoMainCard' component="li" sx={smallVideoStyling.cardStyling}>
+                <CardCover sx={smallVideoStyling.cardCoverStyling}>
+                    <video ref={localVideoRef}
+                        autoPlay
+                        loop
+                        muted
+                    >
+                    </video>
+                </CardCover>
+                <div className='cardContent' style={{ height: '100%', width: '100%' }}>
+                    <div className='micDiv'>
+                        <Avatar sx={{ background: '#3E4044', color: 'white' }} color='white' alt={'Mic'} size="sm" > {globalState.Mic ? <IoMdMic /> : <IoMdMicOff />} </Avatar>
+                    </div>
+                    <div className='avatarDiv'>
+                        <Avatar alt={globalState.name} size="md" />
+                    </div>
+                    <div className='userNameDiv' >
+                        {globalState.name}
+                    </div>
+                </div>
+            </Card>
+            {globalState.remoteUsers.map((user, index) => {
                 return <Card key={index} className='smallVideoMainCard' component="li" sx={smallVideoStyling.cardStyling}>
                     <CardCover sx={smallVideoStyling.cardCoverStyling}>
-                        <video className='localVideo'
+                        <video ref={handleVideoRef(index)}
                             autoPlay
                             loop
                             muted
-                        poster="https://assets.codepen.io/6093409/river.jpg"
                         >
-                            <source
-                            src="https://assets.codepen.io/6093409/river.mp4"
-                            type="video/mp4"
-                            />
                         </video>
                     </CardCover>
                     <div className='cardContent' style={{ height: '100%', width: '100%' }}>

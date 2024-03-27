@@ -19,7 +19,7 @@ const GetUserInfo = () => {
         if (value.length === 0) {
             return alert("Please Enter a Valid Name")
         }
-        updateGlobalState({ tabValue: 0 });
+        updateGlobalState({ tabValue: 0, name: value });
         console.log('name: ', value);
         navigate('/stream')
     }

@@ -10,7 +10,6 @@ import StreamPage from './views/StreamPage.jsx';
 import ErrorPage from './views/ErrorPage.jsx';
 import { GlobalStateProvider } from './ContextAPI/GlobalStateContext.jsx';
 import AuthPage from './views/AuthPage.jsx';
-import SocketConfig from './socket.jsx';
 
 const router = createBrowserRouter([
   {
@@ -25,10 +24,6 @@ const router = createBrowserRouter([
   {
     path: "Auth/",
     element: <AuthPage />,
-  },
-  {
-    path: "temp/",
-    element: <SocketConfig />,
   },
   {
     path: "Stream/",

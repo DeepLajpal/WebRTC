@@ -14,8 +14,12 @@ export const GlobalStateProvider = ({ children }) => {
     profileImg: false,
     remoteVideo:false,
     remoteAudio:false,
-    existingUsers:1,
+    existingUsers:2,
+    remoteUsers:[],
+    videoRefs: [],
     tabValue:0,
+    localVideoRef: null,
+    remoteVideoRef: null,
   });
 
   const updateGlobalState = (newState) => {

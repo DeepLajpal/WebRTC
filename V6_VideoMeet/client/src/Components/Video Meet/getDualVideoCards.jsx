@@ -8,9 +8,18 @@ import { IoMdMicOff } from "react-icons/io";
 import Avatar from '@mui/joy/Avatar';
 
 
+
 const DualVideoCards = ({ small }) => {
 
-    const { globalState } = useGlobalState();
+    const { globalState, updateGlobalState } = useGlobalState();
+    
+    const localVideoRef = useRef(null);
+    const remoteVideoRef = useRef(null);
+
+    useEffect(() => {
+        updateGlobalState({ localVideoRef, remoteVideoRef });
+    }, [localVideoRef, remoteVideoRef]);
+
 
     const smallVideoStyling = {
         cardStyling: { minWidth: '234px', width: '234px', height: '132px', position: 'absolute', inset: 'auto 5% 5% auto', zIndex: '1', background: !globalState.Video ? '#4A4E51' : 'none' },
@@ -32,16 +41,12 @@ const DualVideoCards = ({ small }) => {
         <Wrapper>
             {small ? <Card className='smallVideoMainCard' component="li" sx={smallVideoStyling.cardStyling}>
                 <CardCover sx={smallVideoStyling.cardCoverStyling}>
-                    <video className='localVideo'
+                    <video
                         autoPlay
                         loop
                         muted
-                        poster="https://assets.codepen.io/6093409/river.jpg"
+                        ref={localVideoRef}
                     >
-                        <source
-                            src="https://assets.codepen.io/6093409/river.mp4"
-                            type="video/mp4"
-                        />
                     </video>
                 </CardCover>
                 <div className='cardContent'>
@@ -56,33 +61,30 @@ const DualVideoCards = ({ small }) => {
                     </div>
                 </div>
             </Card>
-            : <Card className={`BigVideoMainCard`} component="li" sx={bigVideoStyling.cardStyling}>
-                <CardCover sx={bigVideoStyling.cardCoverStyling}>
-                    <video
-                        autoPlay
-                        loop
-                        muted
-                        poster="https://assets.codepen.io/6093409/river.jpg"
-                    >
-                        <source
-                            src="https://assets.codepen.io/6093409/river.mp4"
-                            type="video/mp4"
-                        />
-                    </video>
-                </CardCover>
-                <div className='cardContent'>
-                    <div className='avatarDiv' style={bigVideoStyling.cardContentAvatarStyling}>
-                        <Avatar alt={globalState.name} size="lg" />
+                : <Card className={`BigVideoMainCard`} component="li" sx={bigVideoStyling.cardStyling}>
+                    <CardCover sx={bigVideoStyling.cardCoverStyling}>
+                        <video
+                            autoPlay
+                            loop
+                            muted
+                            ref={globalState.existingUsers === 2 ? remoteVideoRef : localVideoRef}
+                        >
+                        </video>
+                    </CardCover>
+                    <div className='cardContent'>
+                        <div className='avatarDiv' style={bigVideoStyling.cardContentAvatarStyling}>
+                            <Avatar alt={globalState.name} size="lg" />
+                        </div>
+                        <div className='userNameDiv' style={bigVideoStyling.cardContentUserNameStyling}>
+                            {globalState.name}
+                        </div>
+                        <div className='micDiv' style={bigVideoStyling.cardContentMicStyling}>
+                            <Avatar sx={{ background: '#3E4044', color: 'white' }} alt={'Mic'} size="sm" >{globalState.Mic ? <IoMdMic /> : <IoMdMicOff />}</Avatar>
+                        </div>
                     </div>
-                    <div className='userNameDiv' style={bigVideoStyling.cardContentUserNameStyling}>
-                        {globalState.name}
-                    </div>
-                    <div className='micDiv' style={bigVideoStyling.cardContentMicStyling}>
-                        <Avatar sx={{ background: '#3E4044', color: 'white' }} alt={'Mic'} size="sm" >{globalState.Mic ? <IoMdMic /> : <IoMdMicOff />}</Avatar>
-                    </div>
-                </div>
-            </Card>}
+                </Card>}
         </Wrapper>
+
     );
 }
 

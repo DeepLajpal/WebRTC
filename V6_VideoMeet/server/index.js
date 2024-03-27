@@ -27,7 +27,6 @@ io.on("connection", (socket) => {
                 && existingConnection.meeting_id == incommingConnections.meeting_id
         });
         if (foundIncommingUserInExistingConnections) {
-            socket.emit("newConnectionInformation", currentMeetingUsers);
             return;
         }
         existingConnections.push({
@@ -40,6 +39,10 @@ io.on("connection", (socket) => {
         console.log(`other users ${currentMeetingUsers.map((u)=>u.connectionId)}`);
 
         currentMeetingUsers.forEach(currentMeetingUser => {
+            console.log("new_connection_information", {
+                newUserId: incommingConnections.current_user_name,
+                newUserConnId: socket.id
+            })
             socket.to(currentMeetingUser.connectionId).emit('currentMeetingUsers_to_inform_about_new_connection_information', {
                 newUserId: incommingConnections.current_user_name,
                 newUserConnId: socket.id
@@ -57,6 +60,7 @@ io.on("connection", (socket) => {
     })
 
     socket.on('disconnect', function(){
+        console.log("disconnected User: ", socket.id)
         var disconnectedUser = existingConnections.find(existingConnection => existingConnection.connectionId == socket.id);
         if(disconnectedUser){
             var meetingId = disconnectedUser.meeting_id;
@@ -65,7 +69,6 @@ io.on("connection", (socket) => {
             restUsers.forEach(restUser =>{
                 socket.to(restUser.connectionId).emit('closedConnectionInfo', socket.id);
             })
-
         }
     })
 
