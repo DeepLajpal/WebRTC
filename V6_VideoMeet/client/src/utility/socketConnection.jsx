@@ -1,10 +1,11 @@
-
 import io from 'socket.io-client';
 
-// let socket;
+var socket;
 
 const initSocket = (username, meeting_id) => {
-        const socket = io(import.meta.env.VITE_SOCKET_URL);
+    if (!socket || !socket.connected) {
+        socket = io(import.meta.env.VITE_SOCKET_URL);
+        console.log(`socket established`);
 
         socket.on('connect', () => {
             console.log('Connected to socket');
@@ -25,7 +26,10 @@ const initSocket = (username, meeting_id) => {
         socket.on('connect_error', (error) => {
             console.error('Error connecting to socket:', error);
         });
-    };
+
+    }
+
+};
 
 // export const getSocket = () => {
 //     return socket;

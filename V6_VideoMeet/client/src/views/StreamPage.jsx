@@ -5,11 +5,13 @@ import styled from 'styled-components';
 import initSocket from '../utility/socketConnection.jsx';
 import { useGlobalState } from '../ContextAPI/GlobalStateContext';
 
+const name = "Name";
+const meetingId = "MeetingId";
 const Stream = () => {
   const { globalState } = useGlobalState();
   useEffect(()=>{
-    initSocket(globalState.name, globalState.meetingId);
-  },[globalState.name, globalState.meetingId])
+    initSocket(name, meetingId);
+  },[])
   return (
     <Wrapper>
       <GetVideoContainers/>

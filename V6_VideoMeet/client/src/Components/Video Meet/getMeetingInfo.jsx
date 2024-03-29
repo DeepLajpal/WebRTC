@@ -28,7 +28,7 @@ const GetMeetingInfo = ({ handleTabChange }) => {
   const handleJoin = (event) => {
     const inputValue = meetingIdInput.current.value;
 
-    if (value.length === 8) {
+    if (inputValue.length === 8) {
       handleTabChange(1);
       updateGlobalState({ name: inputValue });
       console.log('meetingId: ', inputValue);
