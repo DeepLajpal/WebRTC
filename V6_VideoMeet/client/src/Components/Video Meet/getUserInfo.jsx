@@ -10,21 +10,23 @@ import { useGlobalState } from '../../ContextAPI/GlobalStateContext';
 const GetUserInfo = ({ handleTabChange }) => {
     const meetingIdInput = useRef(null);
     const navigate = useNavigate();
+    const { updateGlobalState } = useGlobalState();
 
     const handleJoinMeet = (event) => {
-        const value = meetingIdInput.current.value;
+        const inputValue = meetingIdInput.current.value;
 
-        if (value.length === 0) {
+        if (inputValue.length === 0) {
             return alert("Please Enter a Valid Name")
         }
+        updateGlobalState({name: inputValue})
         handleTabChange(0);
-        console.log('name: ', value);
+        console.log('name: ', inputValue);
         navigate('/stream')
     }
 
     const handleKeyDown = (event) => {
-        const value = event.key;
-        if (value === "Enter") {
+        const keyPressed = event.key;
+        if (keyPressed === "Enter") {
             handleJoinMeet()
         }
     }

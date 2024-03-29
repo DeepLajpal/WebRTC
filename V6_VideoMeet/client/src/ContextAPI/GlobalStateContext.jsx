@@ -12,8 +12,6 @@ export const GlobalStateProvider = ({ children }) => {
     name: null,
     meetingId: null,
     profileImg: false,
-    remoteVideo:false,
-    remoteAudio:false,
     existingUsers:1,
     tabValue:0,
   });

@@ -22,17 +22,18 @@ const GetMeetingInfo = ({ handleTabChange }) => {
     var meetingId = Math.floor(Math.random() * 100000000).toString().padEnd(8, '0');
     handleTabChange(1);
     updateGlobalState({ meetingId: meetingId });
+    console.log('meetingId: ', meetingId);
   }
 
   const handleJoin = (event) => {
-    const value = meetingIdInput.current.value;
+    const inputValue = meetingIdInput.current.value;
 
     if (value.length === 8) {
       handleTabChange(1);
       updateGlobalState({ name: inputValue });
-      console.log('meetingId: ', value);
+      console.log('meetingId: ', inputValue);
     }
-    else if (value.length === 0) {
+    else if (inputValue.length === 0) {
       alert("Please Enter a Valid Meeting Id")
     }
     else {

@@ -15,7 +15,7 @@ const Home = () => {
 
   return (
     <Wrapper>
-      <div className='startDiv'>
+      <div className='startDiv' onClick={()=>handleTabChange(0)}>
         <ShowNav logoName={"Video Meet"} />
       </div>
       <div className='middleDiv'>

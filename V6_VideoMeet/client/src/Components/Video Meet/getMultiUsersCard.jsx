@@ -13,7 +13,7 @@ const MultiUsersCard = () => {
     const { globalState } = useGlobalState();
 
     const smallVideoStyling = {
-        cardStyling: { minWidth: '234px', width: '234px', minHeight: '132px', height: '132px', background: !globalState.Video ? '#4A4E51' : 'none'  },
+        cardStyling: { minWidth: '234px', width: '234px', minHeight: '132px', height: '132px', background: !globalState.Video ? '#4A4E51' : 'none' },
         cardCoverStyling: { display: !globalState.Video ? 'none' : null },
     }
 
@@ -27,12 +27,7 @@ const MultiUsersCard = () => {
                             autoPlay
                             loop
                             muted
-                        poster="https://assets.codepen.io/6093409/river.jpg"
                         >
-                            <source
-                            src="https://assets.codepen.io/6093409/river.mp4"
-                            type="video/mp4"
-                            />
                         </video>
                     </CardCover>
                     <div className='cardContent' style={{ height: '100%', width: '100%' }}>
