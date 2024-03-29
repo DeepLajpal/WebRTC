@@ -4,27 +4,15 @@ import ShowNav from '../Components/Video Meet/getNav';
 import GetMeetingInfo from '../Components/Video Meet/getMeetingInfo';
 import IconTabs from '../Components/Common/showTab';
 import GetUserInfo from '../Components/Video Meet/getUserInfo';
-import { initSocket } from '../utility/socketConnection';
-import { useGlobalState } from '../ContextAPI/GlobalStateContext';
 
 const Home = () => {
 
   const [tabValue, setTabValue] = React.useState(0);
-  const { globalState } = useGlobalState();
 
   const handleTabChange = (newValue) => {
     setTabValue(newValue);
   };
 
-  useEffect(() => {
-    if (!globalState?.name || !globalState?.meetingId) return;
-    initSocket(globalState?.name, globalState?.meetingId)
-      .then((socket) => {
-        console.log('Socket initialized');
-      }).catch((error) => {
-        console.error('Error initializing socket:', error);
-      });
-  }, [globalState?.name, globalState?.meetingId]);
   return (
     <Wrapper>
       <div className='startDiv'>

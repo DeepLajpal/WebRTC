@@ -1,10 +1,9 @@
 
 import io from 'socket.io-client';
 
-let socket;
+// let socket;
 
-export const initSocket = (username, meeting_id) => {
-    return new Promise((resolve, reject) => {
+const initSocket = (username, meeting_id) => {
         const socket = io(import.meta.env.VITE_SOCKET_URL);
 
         socket.on('connect', () => {
@@ -16,7 +15,6 @@ export const initSocket = (username, meeting_id) => {
                     meeting_id: meeting_id,
                 });
             }
-            resolve(socket);
         });
 
         socket.on('disconnect', () => {
@@ -26,11 +24,11 @@ export const initSocket = (username, meeting_id) => {
 
         socket.on('connect_error', (error) => {
             console.error('Error connecting to socket:', error);
-            reject(error);
         });
-    })
-};
+    };
 
-export const getSocket = () => {
-    return socket;
-};
+// export const getSocket = () => {
+//     return socket;
+// };
+
+export default initSocket;
