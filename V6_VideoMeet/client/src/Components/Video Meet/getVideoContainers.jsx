@@ -7,7 +7,7 @@ import MultiUsersCard from './getMultiUsersCard';
 import DualVideoCards from './getDualVideoCards';
 
 
-const GetVideoContainers = () => {
+const GetVideoContainers = ({localName, localMeetingId, existingUsersData}) => {
 
     const { globalState } = useGlobalState();
 
@@ -31,7 +31,7 @@ const GetVideoContainers = () => {
     return (
         <Wrapper>
             {/* {handleVideoContainers()} */}
-            <MultiUsersCard />
+            <MultiUsersCard localName ={localName} localMeetingId={localMeetingId} existingUsersData={globalState.existingUsersData}/>
         </Wrapper>
     );
 }

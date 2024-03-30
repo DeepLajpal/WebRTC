@@ -5,16 +5,21 @@ import styled from 'styled-components';
 import initSocket from '../utility/socketConnection.jsx';
 import { useGlobalState } from '../ContextAPI/GlobalStateContext';
 
-const name = "Name";
-const meetingId = "MeetingId";
+
 const Stream = () => {
-  const { globalState } = useGlobalState();
-  useEffect(()=>{
-    initSocket(globalState.name, globalState.meetingId);
-  },[])
+  const { globalState, updateGlobalState } = useGlobalState();
+  useEffect(() => {
+    const socket = initSocket(globalState.name, globalState.meetingId, globalState.existingUsersData, updateGlobalState);
+
+    socket.on
+    return () => {
+      socket.disconnect();
+      console.log('socket clenup done');
+    }
+  }, [])
   return (
     <Wrapper>
-      <GetVideoContainers/>
+      <GetVideoContainers localName = {globalState.name} localMeetingId = {globalState.meetingId} existingUsersData={globalState.existingUsersData}/>
       <Footer />
     </Wrapper>
   );

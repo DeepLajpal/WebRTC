@@ -8,7 +8,7 @@ import { IoMdMicOff } from "react-icons/io";
 import Avatar from '@mui/joy/Avatar';
 
 
-const MultiUsersCard = () => {
+const MultiUsersCard = ({ localName, localMeetingId, existingUsersData }) => {
 
     const { globalState } = useGlobalState();
 
@@ -19,7 +19,28 @@ const MultiUsersCard = () => {
 
     return (
         <Wrapper>
-            {[{ name: "user1" }, { name: "user2" }, { name: "user3" }, { name: "user1" }, { name: "user2" }, { name: "user3" }].map((user, index) => {
+            <Card className='smallVideoMainCard' component="li" sx={smallVideoStyling.cardStyling}>
+                <CardCover sx={smallVideoStyling.cardCoverStyling}>
+                    <video className='localVideo'
+                        autoPlay
+                        loop
+                        muted
+                    >
+                    </video>
+                </CardCover>
+                <div className='cardContent' style={{ height: '100%', width: '100%' }}>
+                    <div className='micDiv'>
+                        <Avatar sx={{ background: '#3E4044', color: 'white' }} color='white' alt={'Mic'} size="sm" >{globalState.Mic ? <IoMdMic /> : <IoMdMicOff />}</Avatar>
+                    </div>
+                    <div className='avatarDiv'>
+                        <Avatar alt={`${localName}`} size="md" />
+                    </div>
+                    <div className='userNameDiv' >
+                        {localName}
+                    </div>
+                </div>
+            </Card>
+            {existingUsersData.map((user, index) => {
 
                 return <Card key={index} className='smallVideoMainCard' component="li" sx={smallVideoStyling.cardStyling}>
                     <CardCover sx={smallVideoStyling.cardCoverStyling}>

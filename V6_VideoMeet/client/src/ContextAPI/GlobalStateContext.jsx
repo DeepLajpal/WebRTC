@@ -13,6 +13,7 @@ export const GlobalStateProvider = ({ children }) => {
     meetingId: null,
     profileImg: false,
     existingUsers:1,
+    existingUsersData:[],
     tabValue:0,
   });
 

@@ -4,7 +4,7 @@ var socket;
 var users_connectionID = []; // Array to store user connection IDs
 var users_connection = []; // Array to store user connections
 
-const initSocket = (username, meeting_id) => {
+const initSocket = (username, meeting_id, existingUsersData, updateGlobalState) => {
     socket = io(import.meta.env.VITE_SOCKET_URL);
     console.log(`socket established`);
 
@@ -57,6 +57,7 @@ const initSocket = (username, meeting_id) => {
 
         for (let i = 0; i < currentMeetingUsers.length; i++) {
             // addUser(currentMeetingUsers[i].user_id, currentMeetingUsers[i].connectionId); // Adding other users to the UI of a new user
+            // updateGlobalState({ existingUsersData: existingUsersData.push(data.newUserConnId)});
             createConnection(currentMeetingUsers[i].connectionId); // Create connection with other users
         }
     });
@@ -64,6 +65,7 @@ const initSocket = (username, meeting_id) => {
     socket.on("currentMeetingUsers_to_inform_about_new_connection_information", function (data) {
         // console.log('new_connection_information: ', data)
         // addUser(data.newUserId, data.newUserConnId); // Adding new users to other users UI
+        updateGlobalState({ existingUsersData: existingUsersData.push(data.newUserConnId)});
         createConnection(data.newUserConnId); // other user making connection with the new user
     });
 
@@ -304,11 +306,12 @@ const initSocket = (username, meeting_id) => {
         console.error('Error connecting to socket:', error);
     });
 
+    return socket;
 }
 
 
-export const getSocket = () => {
-    return socket;
-};
+// export const getSocket = () => {
+//     return socket;
+// };
 
 export default initSocket;
