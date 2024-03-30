@@ -30,7 +30,7 @@ io.on("connection", (socket) => {
                 && existingConnection.meeting_id == incommingConnections.meeting_id
         });
         if (foundIncommingUserInExistingConnections) {
-            socket.emit("newConnectionInformation", currentMeetingUsers);
+            socket.emit("new_user_to_inform_about_currentMeetingUsers", currentMeetingUsers);
             return;
         }
         existingConnections.push({

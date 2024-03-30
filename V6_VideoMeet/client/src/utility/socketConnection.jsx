@@ -17,6 +17,9 @@ const initSocket = (username, meeting_id) => {
                 meeting_id: meeting_id,
             });
         }
+
+
+
         // var localConnectionID = socket.id; // Get local connection ID
         // localUserVideo = document.getElementById("localStream"); // Get local user video element
         // processMedia(); // Process media devices
@@ -32,7 +35,7 @@ const initSocket = (username, meeting_id) => {
     };
 
     // var socket = io.connect(socketUrl); // Connect to socket server
-    // console.log(`socket established`);
+    // // console.log(`socket established`);
 
     // socket.on("connect", () => {
     //     if (socket.connected) {
@@ -49,7 +52,7 @@ const initSocket = (username, meeting_id) => {
     // });
 
     socket.on("new_user_to_inform_about_currentMeetingUsers", function (currentMeetingUsers) {
-        console.log('currentMeetingUsers: ', currentMeetingUsers)
+        // console.log('currentMeetingUsers: ', currentMeetingUsers)
         // $("#remote-video .other").remove();
 
         for (let i = 0; i < currentMeetingUsers.length; i++) {
@@ -59,6 +62,7 @@ const initSocket = (username, meeting_id) => {
     });
 
     socket.on("currentMeetingUsers_to_inform_about_new_connection_information", function (data) {
+        // console.log('new_connection_information: ', data)
         // addUser(data.newUserId, data.newUserConnId); // Adding new users to other users UI
         createConnection(data.newUserConnId); // other user making connection with the new user
     });
@@ -118,10 +122,10 @@ const initSocket = (username, meeting_id) => {
     // Function to create a new connection
     async function createConnection(connId) {
         var connection = new RTCPeerConnection(iceConfig);
+        // console.log('connection created: ', connection)
 
         connection.onicecandidate = function (event) {
             if (event.candidate) {
-                console.log('event.candidate:', event.candidate)
                 sdpFunction(
                     JSON.stringify({
                         iceCandidate: event.candidate,
@@ -132,6 +136,18 @@ const initSocket = (username, meeting_id) => {
                 console.log('ice gathering is completed')
             }
         }
+
+        const sendChannel = connection.createDataChannel("sendChannel");
+        sendChannel.onopen = e => console.log("open!!!!");
+        sendChannel.onclose = e => console.log("closed!!!!!!");
+
+        connection.ondatachannel = e => {
+
+            const receiveChannel = e.channel;
+            receiveChannel.onmessage = e => console.log("messsage received!!!" + e.data)
+            
+        }
+
 
         connection.onnegotiationneeded = async function (event) {
             await createOffer(connId);
@@ -162,6 +178,7 @@ const initSocket = (username, meeting_id) => {
         //         remoteAudioDiv.load();
         //     }
         // };
+
         users_connectionID[connId] = connId;
         users_connection[connId] = connection;
         // updateMediaSenders(mediaTrack, rtpVideoSenders);
@@ -173,7 +190,9 @@ const initSocket = (username, meeting_id) => {
         var connection = users_connection[connid];
         var offer = await connection.createOffer();
 
+        console.log('inside create offer')
         await connection.setLocalDescription(offer);
+        console.log('local description, offer: ', connection.localDescription)
 
         sdpFunction(
             JSON.stringify({
@@ -214,7 +233,7 @@ const initSocket = (username, meeting_id) => {
     //         localUserVideo.srcObject = new MediaStream([mediaTrack]);
     //         updateMediaSenders(mediaTrack, rtpVideoSenders);
     //     } catch (err) {
-    //         console.log("error on process media: ", err);
+    //         // console.log("error on process media: ", err);
     //     }
     // }
 
@@ -223,12 +242,13 @@ const initSocket = (username, meeting_id) => {
         message = JSON.parse(message);
 
         if (message.answer) {
+            console.log('answer received', message.answer)
             await users_connection[from_connid].setRemoteDescription(
                 new RTCSessionDescription(message.answer)
             );
         } else if (message.offer) {
+            console.log('offer received', message.offer)
             if (!users_connection[from_connid]) {
-                console.log("inside not created connection if block")
                 await createConnection(from_connid);
             }
 
@@ -237,7 +257,9 @@ const initSocket = (username, meeting_id) => {
             );
             var answer = await users_connection[from_connid].createAnswer();
 
+            console.log('inside offer received, answer created:')
             await users_connection[from_connid].setLocalDescription(answer);
+            console.log('local description, answer: ', users_connection[from_connid].localDescription)
             sdpFunction(
                 JSON.stringify({
                     answer: answer,
@@ -249,6 +271,7 @@ const initSocket = (username, meeting_id) => {
                 await createConnection(from_connid);
             }
             try {
+                console.log(' ice candidate adding success')
                 await users_connection[from_connid].addIceCandidate(
                     message.iceCandidate
                 );
@@ -269,7 +292,7 @@ const initSocket = (username, meeting_id) => {
         //     });
         //     remoteVideoStream[connId] = null;
         // }
-        console.log('closedConnectionInfo: ', connId)
+        // console.log('closedConnectionInfo: ', connId)
     })
 
     socket.on('disconnect', () => {
