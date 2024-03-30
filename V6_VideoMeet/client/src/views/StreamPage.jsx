@@ -10,7 +10,7 @@ const meetingId = "MeetingId";
 const Stream = () => {
   const { globalState } = useGlobalState();
   useEffect(()=>{
-    initSocket(name, meetingId);
+    initSocket(globalState.name, globalState.meetingId);
   },[])
   return (
     <Wrapper>

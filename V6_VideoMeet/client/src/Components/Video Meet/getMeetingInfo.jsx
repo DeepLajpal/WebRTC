@@ -30,7 +30,7 @@ const GetMeetingInfo = ({ handleTabChange }) => {
 
     if (inputValue.length === 8) {
       handleTabChange(1);
-      updateGlobalState({ name: inputValue });
+      updateGlobalState({ meetingId: inputValue });
       console.log('meetingId: ', inputValue);
     }
     else if (inputValue.length === 0) {

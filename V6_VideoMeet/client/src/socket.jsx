@@ -32,8 +32,8 @@ socket.on("connect", () => {
         });
     }
 
-    var localConnectionID = socket.id; // Get local connection ID
-    localUserVideo = document.getElementById("localStream"); // Get local user video element
+    // var localConnectionID = socket.id; // Get local connection ID
+    // localUserVideo = document.getElementById("localStream"); // Get local user video element
     processMedia(); // Process media devices
 });
 
@@ -125,34 +125,34 @@ async function createConnection(connId) {
         await createOffer(connId);
     };
 
-    connection.ontrack = function (event) {
-        if (!remoteVideoStream[connId]) {
-            remoteVideoStream[connId] = new MediaStream();
-        }
+    // connection.ontrack = function (event) {
+    //     if (!remoteVideoStream[connId]) {
+    //         remoteVideoStream[connId] = new MediaStream();
+    //     }
 
-        if (event.track.kind == "video") {
-            remoteVideoStream[connId]
-                .getTracks()
-                .forEach((t) => remoteVideoStream[connId].removeTrack(t));
-            remoteVideoStream[connId].addTrack(event.track);
-            var remoteVideoDiv = document.getElementById("video_" + connId);
-            remoteVideoDiv.srcObject = null;
-            remoteVideoDiv.srcObject = remoteVideoStream[connId];
-            remoteVideoDiv.load();
-        } else if (event.track.kind == "audio") {
-            remoteAudioStream[connId]
-                .getTracks()
-                .forEach((t) => remoteAudioStream[connId].removeTrack(t));
-            remoteAudioStream[connId].addTrack(event.track);
-            var remoteAudioDiv = document.getElementById("audio_" + connId);
-            remoteAudioDiv.srcObject = null;
-            remoteAudioDiv.srcObject = remoteAudioStream[connId];
-            remoteAudioDiv.load();
-        }
-    };
+    //     if (event.track.kind == "video") {
+    //         remoteVideoStream[connId]
+    //             .getTracks()
+    //             .forEach((t) => remoteVideoStream[connId].removeTrack(t));
+    //         remoteVideoStream[connId].addTrack(event.track);
+    //         var remoteVideoDiv = document.getElementById("video_" + connId);
+    //         remoteVideoDiv.srcObject = null;
+    //         remoteVideoDiv.srcObject = remoteVideoStream[connId];
+    //         remoteVideoDiv.load();
+    //     } else if (event.track.kind == "audio") {
+    //         remoteAudioStream[connId]
+    //             .getTracks()
+    //             .forEach((t) => remoteAudioStream[connId].removeTrack(t));
+    //         remoteAudioStream[connId].addTrack(event.track);
+    //         var remoteAudioDiv = document.getElementById("audio_" + connId);
+    //         remoteAudioDiv.srcObject = null;
+    //         remoteAudioDiv.srcObject = remoteAudioStream[connId];
+    //         remoteAudioDiv.load();
+    //     }
+    // };
     users_connectionID[connId] = connId;
     users_connection[connId] = connection;
-    updateMediaSenders(mediaTrack, rtpVideoSenders);
+    // updateMediaSenders(mediaTrack, rtpVideoSenders);
     return connection;
 }
 
@@ -176,35 +176,35 @@ socket.on("sdpProcess", async function (data) {
 });
 
 // Function to process media devices
-async function processMedia() {
-    try {
-        var vStream = null;
-        var aStream = null;
+// async function processMedia() {
+//     try {
+//         var vStream = null;
+//         var aStream = null;
 
-        vStream = await navigator.mediaDevices.getUserMedia({
-            video: {
-                width: 720,
-                height: 480,
-            },
+//         vStream = await navigator.mediaDevices.getUserMedia({
+//             video: {
+//                 width: 720,
+//                 height: 480,
+//             },
 
-            audio: false,
-        });
-        aStream = await navigator.mediaDevices.getUserMedia({
-            video: false,
-            audio: true,
-        });
+//             audio: false,
+//         });
+//         aStream = await navigator.mediaDevices.getUserMedia({
+//             video: false,
+//             audio: true,
+//         });
 
-        audioTrack = aStream.getAudioTracks()[0];
-        audioTrack.enable = true;
-        updateMediaSenders(audioTrack, rtpAudioSenders);
+//         audioTrack = aStream.getAudioTracks()[0];
+//         audioTrack.enable = true;
+//         updateMediaSenders(audioTrack, rtpAudioSenders);
 
-        mediaTrack = vStream.getVideoTracks()[0];
-        localUserVideo.srcObject = new MediaStream([mediaTrack]);
-        updateMediaSenders(mediaTrack, rtpVideoSenders);
-    } catch (err) {
-        console.log("error on process media: ", err);
-    }
-}
+//         mediaTrack = vStream.getVideoTracks()[0];
+//         localUserVideo.srcObject = new MediaStream([mediaTrack]);
+//         updateMediaSenders(mediaTrack, rtpVideoSenders);
+//     } catch (err) {
+//         console.log("error on process media: ", err);
+//     }
+// }
 
 // Function to process SDP message
 async function sdpProcess(message, from_connid) {
@@ -247,14 +247,15 @@ async function sdpProcess(message, from_connid) {
 }
 
 socket.on('closedConnectionInfo', function(connId){
-    $('#'+connId).remove();
-    users_connectionID[connId] = null;
-    users_connection[connId] = close();
-    users_connection[connId]= null;
-    if (remoteVideoStream[connId]){
-        remoteVideoStream[connId].getTracks().forEach(t => {
-            t.stop();
-        });
-        remoteVideoStream[connId] = null;
-    }
+    // $('#'+connId).remove();
+    // users_connectionID[connId] = null;
+    // users_connection[connId] = close();
+    // users_connection[connId]= null;
+    // if (remoteVideoStream[connId]){
+    //     remoteVideoStream[connId].getTracks().forEach(t => {
+    //         t.stop();
+    //     });
+    //     remoteVideoStream[connId] = null;
+    // }
+    console.log('closedConnectionInfo: ', connId)
 })
