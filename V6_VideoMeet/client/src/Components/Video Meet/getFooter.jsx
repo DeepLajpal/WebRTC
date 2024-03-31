@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { MdCallEnd } from "react-icons/md";
 import { IoMdMic } from "react-icons/io";
 import { IoMdMicOff } from "react-icons/io";
@@ -14,8 +14,9 @@ import { useNavigate } from 'react-router-dom'
 import ShowBadge from '../Common/showBadge';
 
 
-const Footer = () => {
+const Footer = ({localMeetingId}) => {
   const navigate = useNavigate()
+  const [ date, setDate ] = useState(new Date());
   const { globalState, updateGlobalState } = useGlobalState();
   const micBtnStyle = globalState.Mic ? "onBtn" : "offBtn";
   const VideoBtnStyle = globalState.Video ? "onBtn" : "offBtn";
@@ -40,21 +41,29 @@ const Footer = () => {
     }
   }
 
-  const date = new Date();
   const options = {
     hour: '2-digit',
     minute: '2-digit'
   };
   const time = date.toLocaleTimeString('en-US', options);
+
+  useEffect(()=>{
+    const date = setInterval(() => {
+      setDate(new Date());
+    }, 1000);
+
+    return () => {
+      clearInterval(date);
+    }
+  }, [])
   
-  var meetingId = '74589962';
   return (
     <footer>
       <Wrapper className='container'>
         <div className='leftGrid'>
           <div className='leftGridItem'>
             <span className='time'>{time}  |  </span>
-            <span className='meetingId'>{meetingId}</span>
+            <span className='meetingId'>{localMeetingId}</span>
           </div>
         </div>
         <div className='middleGrid'>

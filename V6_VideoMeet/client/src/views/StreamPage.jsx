@@ -36,7 +36,7 @@ const Stream = () => {
   return (
     <Wrapper>
       <GetVideoContainers localName={globalState.name} localMeetingId={globalState.meetingId} existingUsersData={existingUsersData} />
-      <Footer />
+      <Footer localMeetingId={globalState.meetingId}/>
     </Wrapper>
   );
 }
