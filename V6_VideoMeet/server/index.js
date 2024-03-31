@@ -62,9 +62,9 @@ io.on("connection", (socket) => {
             var meetingId = disconnectedUser.meeting_id;
             existingConnections = existingConnections.filter(existingConnection => existingConnection.connectionId != socket.id);
             var restUsers = existingConnections.filter(existingConnection => existingConnection.meeting_id == meetingId);
-            restUsers.forEach(restUser =>{
-                socket.to(restUser.connectionId).emit('closedConnectionInfo', socket.id);
-            })
+            // restUsers.forEach(restUser =>{
+            //     socket.to(restUser.connectionId).emit('closedConnectionInfo', socket.id);
+            // })
 
         }
         console.log(`user disconnected ${socket.id}`);

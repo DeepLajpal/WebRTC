@@ -23,6 +23,20 @@ const Stream = () => {
       }
     });
 
+    socket.on('closedConnectionInfo', function (connId) {
+      // $('#'+connId).remove();
+      // users_connectionID[connId] = null;
+      // users_connection[connId] = close();
+      // users_connection[connId]= null;
+      // if (remoteVideoStream[connId]){
+      //     remoteVideoStream[connId].getTracks().forEach(t => {
+      //         t.stop();
+      //     });
+      //     remoteVideoStream[connId] = null;
+      // }
+      // console.log('closedConnectionInfo: ', connId)
+  })
+
     return () => {
       socket.disconnect();
       console.log('socket clenup done');

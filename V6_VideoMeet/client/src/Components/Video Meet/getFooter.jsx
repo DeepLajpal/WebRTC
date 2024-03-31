@@ -15,9 +15,15 @@ import ShowBadge from '../Common/showBadge';
 
 
 const Footer = ({localMeetingId}) => {
+  const options = {
+    hour: '2-digit',
+    minute: '2-digit'
+  };
   const navigate = useNavigate()
-  const [ date, setDate ] = useState(new Date());
+
+  const [ time, setTime ] = useState((new Date()).toLocaleTimeString('en-US', options));
   const { globalState, updateGlobalState } = useGlobalState();
+
   const micBtnStyle = globalState.Mic ? "onBtn" : "offBtn";
   const VideoBtnStyle = globalState.Video ? "onBtn" : "offBtn";
 
@@ -41,15 +47,10 @@ const Footer = ({localMeetingId}) => {
     }
   }
 
-  const options = {
-    hour: '2-digit',
-    minute: '2-digit'
-  };
-  const time = date.toLocaleTimeString('en-US', options);
-
+  // Update time every second
   useEffect(()=>{
     const date = setInterval(() => {
-      setDate(new Date());
+      setTime((new Date()).toLocaleTimeString('en-US', options));
     }, 1000);
 
     return () => {
