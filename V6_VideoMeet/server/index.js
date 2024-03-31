@@ -41,8 +41,9 @@ io.on("connection", (socket) => {
 
         currentMeetingUsers.forEach(currentMeetingUser => {
             socket.to(currentMeetingUser.connectionId).emit('currentMeetingUsers_to_inform_about_new_connection_information', {
-                newUserId: incommingConnections.current_user_name,
-                newUserConnId: socket.id
+                user_id: incommingConnections.current_user_name,
+                connectionId: socket.id,
+                meeting_id: incommingConnections.meeting_id
             });
         });
 

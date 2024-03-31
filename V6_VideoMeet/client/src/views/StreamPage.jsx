@@ -10,7 +10,7 @@ const Stream = () => {
   const { globalState, updateGlobalState } = useGlobalState();
   const [ existingUsersData, setExistingUsersData ] = useState([]);
   useEffect(() => {
-    const socket = initSocket(globalState.name, globalState.meetingId, globalState.existingUsersData, updateGlobalState);
+    const socket = initSocket(globalState.name, globalState.meetingId, existingUsersData, setExistingUsersData);
     
 
     socket.on("currentMeetingUsers_to_inform_about_new_connection_information", function (data) {
@@ -23,7 +23,7 @@ const Stream = () => {
       }
     });
 
-    socket.on('closedConnectionInfo', function (connId) {
+    socket.on('closedConnectionInfo', function (closedConnectionID) {
       // $('#'+connId).remove();
       // users_connectionID[connId] = null;
       // users_connection[connId] = close();
@@ -35,8 +35,8 @@ const Stream = () => {
       //     remoteVideoStream[connId] = null;
       // }
       // console.log('closedConnectionInfo: ', connId)
-
-      setExistingUsersData(prevUsers => prevUsers.filter(user => user.newUserConnId? user.newUserConnId !== connId : user.connectionId !== connId));
+      
+      setExistingUsersData(prevUsers => prevUsers.filter(user => user.connectionId !== closedConnectionID));
   })
 
     return () => {

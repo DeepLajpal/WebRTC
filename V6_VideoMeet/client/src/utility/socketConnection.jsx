@@ -4,7 +4,7 @@ var socket;
 var users_connectionID = []; // Array to store user connection IDs
 var users_connection = []; // Array to store user connections
 
-const initSocket = (username, meeting_id, existingUsersData, updateGlobalState) => {
+const initSocket = (username, meeting_id, existingUsersData, setExistingUsersData) => {
     socket = io(import.meta.env.VITE_SOCKET_URL);
     console.log(`socket established`);
 
@@ -61,10 +61,10 @@ const initSocket = (username, meeting_id, existingUsersData, updateGlobalState) 
         }
     });
 
-    socket.on("currentMeetingUsers_to_inform_about_new_connection_information", function (data) {
+    socket.on("currentMeetingUsers_to_inform_about_new_connection_information", function (newUser) {
         // console.log('new_connection_information: ', data)
         // addUser(data.newUserId, data.newUserConnId); // Adding new users to other users UI
-        createConnection(data.newUserConnId); // other user making connection with the new user
+        createConnection(newUser.connectionId); // other user making connection with the new user
     });
 
     // Function to add user to the UI
@@ -140,14 +140,22 @@ const initSocket = (username, meeting_id, existingUsersData, updateGlobalState) 
         const sendChannel = connection.createDataChannel("sendChannel");
         sendChannel.onopen = e => console.log("open!!!!");
         sendChannel.onclose = e => console.log("closed!!!!!!");
+        sendChannel.onerror = error => console.error("Error on data channel:", error);
 
-        connection.ondatachannel = e => {
-
-            const receiveChannel = e.channel;
-            receiveChannel.onmessage = e => console.log("messsage received!!!" + e.data)
-            
-        }
-
+        const handleReceiveMessage = message => {
+            console.log("Message received:", message.data);
+            // Parse and interpret the message data based on your application's needs
+          };
+        
+          try {
+            const receiveChannel = connection.createDataChannel("receiveChannel");
+            receiveChannel.onmessage = handleReceiveMessage;
+            receiveChannel.onopen = e => console.log("Receive channel open!");
+            receiveChannel.onclose = e => console.log("Receive channel closed!");
+            receiveChannel.onerror = error => console.error("Error on receive channel:", error);
+          } catch (error) {
+            console.error("Error creating receive channel:", error);
+          }
 
         connection.onnegotiationneeded = async function (event) {
             await createOffer(connId);
@@ -252,6 +260,12 @@ const initSocket = (username, meeting_id, existingUsersData, updateGlobalState) 
                 await createConnection(from_connid);
             }
 
+            users_connection[from_connid].ondatachannel = e => {
+
+                const receiveChannel = e.channel;
+                receiveChannel.onmessage = e => console.log("messsage received!!!" + e.data)
+            }    
+
             await users_connection[from_connid].setRemoteDescription(
                 new RTCSessionDescription(message.offer)
             );
@@ -283,9 +297,9 @@ const initSocket = (username, meeting_id, existingUsersData, updateGlobalState) 
 
     socket.on('closedConnectionInfo', function (connId) {
         // $('#'+connId).remove();
-        // users_connectionID[connId] = null;
-        // users_connection[connId] = close();
-        // users_connection[connId]= null;
+        users_connectionID[connId] = null;
+        users_connection[connId] = close();
+        users_connection[connId]= null;
         // if (remoteVideoStream[connId]){
         //     remoteVideoStream[connId].getTracks().forEach(t => {
         //         t.stop();

@@ -56,10 +56,10 @@ const MultiUsersCard = ({ localName, localMeetingId, existingUsersData }) => {
                             <Avatar sx={{ background: '#3E4044', color: 'white' }} color='white' alt={'Mic'} size="sm" >{globalState.Mic ? <IoMdMic /> : <IoMdMicOff />}</Avatar>
                         </div>
                         <div className='avatarDiv'>
-                            <Avatar alt={user?.user_id || user.newUserId} size="md" />
+                            <Avatar alt={user?.user_id} size="md" />
                         </div>
                         <div className='userNameDiv' >
-                            {user?.user_id || user.newUserId}
+                            {user?.user_id}
                         </div>
                     </div>
                 </Card>
