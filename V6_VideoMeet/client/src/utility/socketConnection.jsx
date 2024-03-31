@@ -57,7 +57,6 @@ const initSocket = (username, meeting_id, existingUsersData, updateGlobalState) 
 
         for (let i = 0; i < currentMeetingUsers.length; i++) {
             // addUser(currentMeetingUsers[i].user_id, currentMeetingUsers[i].connectionId); // Adding other users to the UI of a new user
-            // updateGlobalState({ existingUsersData: existingUsersData.push(data.newUserConnId)});
             createConnection(currentMeetingUsers[i].connectionId); // Create connection with other users
         }
     });
@@ -65,7 +64,6 @@ const initSocket = (username, meeting_id, existingUsersData, updateGlobalState) 
     socket.on("currentMeetingUsers_to_inform_about_new_connection_information", function (data) {
         // console.log('new_connection_information: ', data)
         // addUser(data.newUserId, data.newUserConnId); // Adding new users to other users UI
-        updateGlobalState({ existingUsersData: existingUsersData.push(data.newUserConnId)});
         createConnection(data.newUserConnId); // other user making connection with the new user
     });
 
