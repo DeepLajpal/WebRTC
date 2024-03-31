@@ -35,6 +35,8 @@ const Stream = () => {
       //     remoteVideoStream[connId] = null;
       // }
       // console.log('closedConnectionInfo: ', connId)
+
+      setExistingUsersData(prevUsers => prevUsers.filter(user => user.newUserConnId? user.newUserConnId !== connId : user.connectionId !== connId));
   })
 
     return () => {
