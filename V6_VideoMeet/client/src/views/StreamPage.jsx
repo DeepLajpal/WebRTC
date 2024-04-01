@@ -10,9 +10,7 @@ const Stream = () => {
   const { globalState, updateGlobalState } = useGlobalState();
   const [ existingUsersData, setExistingUsersData ] = useState([]);
   useEffect(() => {
-    const socket = initSocket(globalState.name, globalState.meetingId, existingUsersData, setExistingUsersData);
-    
-
+    let socket = initSocket(globalState.name, globalState.meetingId, existingUsersData, setExistingUsersData);
     socket.on("currentMeetingUsers_to_inform_about_new_connection_information", function (data) {
       setExistingUsersData(prevUsers => [...prevUsers, data]);
     });
@@ -48,6 +46,7 @@ const Stream = () => {
   useEffect(() => {
     console.log("existingUsersData:", existingUsersData);
   }, [existingUsersData]); // Log existingUsersData whenever it changes
+
   
   return (
     <Wrapper>

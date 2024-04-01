@@ -34,23 +34,6 @@ const initSocket = (username, meeting_id, existingUsersData, setExistingUsersDat
         });
     };
 
-    // var socket = io.connect(socketUrl); // Connect to socket server
-    // // console.log(`socket established`);
-
-    // socket.on("connect", () => {
-    //     if (socket.connected) {
-    //         // Send user info to signaling server
-    //         socket.emit("users_info_to_signaling_server", {
-    //             current_user_name: username,
-    //             meeting_id: meeting_id,
-    //         });
-    //     }
-
-    //     // var localConnectionID = socket.id; // Get local connection ID
-    //     // localUserVideo = document.getElementById("localStream"); // Get local user video element
-    //     processMedia(); // Process media devices
-    // });
-
     socket.on("new_user_to_inform_about_currentMeetingUsers", function (currentMeetingUsers) {
         // console.log('currentMeetingUsers: ', currentMeetingUsers)
         // $("#remote-video .other").remove();
@@ -226,7 +209,7 @@ const initSocket = (username, meeting_id, existingUsersData, setExistingUsersDat
     //         localUserVideo.srcObject = new MediaStream([mediaTrack]);
     //         updateMediaSenders(mediaTrack, rtpVideoSenders);
     //     } catch (err) {
-    //         // console.log("error on process media: ", err);
+    //        // console.log("error on process media: ", err);
     //     }
     // }
 
@@ -314,4 +297,7 @@ const initSocket = (username, meeting_id, existingUsersData, setExistingUsersDat
 //     return socket;
 // };
 
+export const getSocket = () => {
+    return socket;
+};
 export default initSocket;

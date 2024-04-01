@@ -6,11 +6,61 @@ import { useGlobalState } from '../../ContextAPI/GlobalStateContext';
 import { IoMdMic } from "react-icons/io";
 import { IoMdMicOff } from "react-icons/io";
 import Avatar from '@mui/joy/Avatar';
+import { getSocket } from '../../utility/socketConnection';
 
+let vStream;
 
 const MultiUsersCard = ({ localName, localMeetingId, existingUsersData }) => {
 
     const { globalState } = useGlobalState();
+    var localVideoRef = useRef(null);
+
+    useEffect(() => {
+        const socket = getSocket()
+        console.log("socket: ", socket);
+    }, [])
+
+
+    async function processMedia() {
+        try {
+            vStream = await navigator.mediaDevices.getUserMedia({
+                video: {
+                    width: 720,
+                    height: 480,
+                },
+                audio: false,
+            });
+
+            const mediaTrack = vStream.getVideoTracks()[0];
+            if (localVideoRef.current) {
+                localVideoRef.current.srcObject = new MediaStream([mediaTrack]);
+            } else {
+                console.log('Local Video Ref is not available');
+            }
+        } catch (err) {
+            console.log("Error on processing media: ", err);
+        }
+    }
+
+    useEffect(() => {
+        processMedia();
+        return () => {
+            vStream.getTracks().forEach(track => track.stop());
+        };
+    }, []);
+
+    useEffect(() => {
+            if (!globalState.Video) {
+                vStream.getTracks().forEach(track => track.stop())
+                console.log('Video Stopped');
+            } else {
+                processMedia();
+                console.log('Video Started');
+            }
+    }, [globalState.Video]);
+
+
+
 
     const smallVideoStyling = {
         cardStyling: { minWidth: '234px', width: '234px', minHeight: '132px', height: '132px', background: !globalState.Video ? '#4A4E51' : 'none' },
@@ -21,7 +71,7 @@ const MultiUsersCard = ({ localName, localMeetingId, existingUsersData }) => {
         <Wrapper>
             <Card className='smallVideoMainCard' component="li" sx={smallVideoStyling.cardStyling}>
                 <CardCover sx={smallVideoStyling.cardCoverStyling}>
-                    <video className='localVideo'
+                    <video ref={localVideoRef} className='localVideo'
                         autoPlay
                         loop
                         muted

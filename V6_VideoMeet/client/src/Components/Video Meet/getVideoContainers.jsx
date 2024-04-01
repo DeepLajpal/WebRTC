@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 
 import styled from 'styled-components';
 import { useGlobalState } from '../../ContextAPI/GlobalStateContext';
@@ -7,7 +7,7 @@ import MultiUsersCard from './getMultiUsersCard';
 import DualVideoCards from './getDualVideoCards';
 
 
-const GetVideoContainers = ({localName, localMeetingId, existingUsersData}) => {
+const GetVideoContainers = ({localName, localMeetingId, existingUsersData }) => {
 
     const { globalState } = useGlobalState();
 
