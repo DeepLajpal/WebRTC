@@ -6,8 +6,7 @@ import { useGlobalState } from '../../ContextAPI/GlobalStateContext';
 import { IoMdMic } from "react-icons/io";
 import { IoMdMicOff } from "react-icons/io";
 import Avatar from '@mui/joy/Avatar';
-import { getSocket } from '../../utility/socketConnection';
-
+let rtpVideoSenders =[];
 let vStream;
 
 const MultiUsersCard = ({ localName, localMeetingId, existingUsersData }) => {
@@ -15,10 +14,25 @@ const MultiUsersCard = ({ localName, localMeetingId, existingUsersData }) => {
     const { globalState } = useGlobalState();
     var localVideoRef = useRef(null);
 
-    useEffect(() => {
-        const socket = getSocket()
-        console.log("socket: ", socket);
-    }, [])
+
+        // Function to update media senders
+    function updateMediaSenders(track, rtpSenders) {
+        for (var con_id in users_connection) {
+            var connection = users_connection[con_id];
+            if (
+                connection &&
+                (connection.connectionState == "new" ||
+                    connection.connectionState == "connecting" ||
+                    connection.connectionState == "connected")
+            ) {
+                if (rtpSenders[con_id] && rtpSenders[con_id].track) {
+                    rtpSenders[con_id].replaceTrack(track);
+                } else {
+                    rtpSenders[con_id] = users_connection[con_id].addTrack(track);
+                }
+            }
+        }
+    }
 
 
     async function processMedia() {
@@ -34,6 +48,7 @@ const MultiUsersCard = ({ localName, localMeetingId, existingUsersData }) => {
             const mediaTrack = vStream.getVideoTracks()[0];
             if (localVideoRef.current) {
                 localVideoRef.current.srcObject = new MediaStream([mediaTrack]);
+                // updateMediaSenders(mediaTrack, rtpVideoSenders);
             } else {
                 console.log('Local Video Ref is not available');
             }

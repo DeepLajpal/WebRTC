@@ -1,7 +1,6 @@
 import io from 'socket.io-client';
 
 var socket;
-var users_connectionID = []; // Array to store user connection IDs
 var users_connection = []; // Array to store user connections
 
 const initSocket = (username, meeting_id, existingUsersData, setExistingUsersData) => {
@@ -17,8 +16,6 @@ const initSocket = (username, meeting_id, existingUsersData, setExistingUsersDat
                 meeting_id: meeting_id,
             });
         }
-
-
 
         // var localConnectionID = socket.id; // Get local connection ID
         // localUserVideo = document.getElementById("localStream"); // Get local user video element
@@ -155,7 +152,6 @@ const initSocket = (username, meeting_id, existingUsersData, setExistingUsersDat
         //     }
         // };
 
-        users_connectionID[connId] = connId;
         users_connection[connId] = connection;
         // updateMediaSenders(mediaTrack, rtpVideoSenders);
         return connection;
@@ -268,7 +264,6 @@ const initSocket = (username, meeting_id, existingUsersData, setExistingUsersDat
         if (users_connection[connId]) {
             users_connection[connId].close();
             users_connection[connId] = null;
-            users_connectionID[connId] = null;
         }
 
         // if (remoteVideoStream[connId]){
