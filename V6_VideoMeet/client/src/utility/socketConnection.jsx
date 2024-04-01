@@ -140,22 +140,7 @@ const initSocket = (username, meeting_id, existingUsersData, setExistingUsersDat
         const sendChannel = connection.createDataChannel("sendChannel");
         sendChannel.onopen = e => console.log("open!!!!");
         sendChannel.onclose = e => console.log("closed!!!!!!");
-        sendChannel.onerror = error => console.error("Error on data channel:", error);
-
-        const handleReceiveMessage = message => {
-            console.log("Message received:", message.data);
-            // Parse and interpret the message data based on your application's needs
-          };
-        
-          try {
-            const receiveChannel = connection.createDataChannel("receiveChannel");
-            receiveChannel.onmessage = handleReceiveMessage;
-            receiveChannel.onopen = e => console.log("Receive channel open!");
-            receiveChannel.onclose = e => console.log("Receive channel closed!");
-            receiveChannel.onerror = error => console.error("Error on receive channel:", error);
-          } catch (error) {
-            console.error("Error creating receive channel:", error);
-          }
+        // sendChannel.onerror = error => console.error("Error on data channel:", error);
 
         connection.onnegotiationneeded = async function (event) {
             await createOffer(connId);
@@ -260,11 +245,11 @@ const initSocket = (username, meeting_id, existingUsersData, setExistingUsersDat
                 await createConnection(from_connid);
             }
 
-            users_connection[from_connid].ondatachannel = e => {
+            // users_connection[from_connid].ondatachannel = e => {
 
-                const receiveChannel = e.channel;
-                receiveChannel.onmessage = e => console.log("messsage received!!!" + e.data)
-            }    
+            //     const receiveChannel = e.channel;
+            //     receiveChannel.onmessage = e => console.log("messsage received!!!" + e.data)
+            // }
 
             await users_connection[from_connid].setRemoteDescription(
                 new RTCSessionDescription(message.offer)
@@ -297,9 +282,12 @@ const initSocket = (username, meeting_id, existingUsersData, setExistingUsersDat
 
     socket.on('closedConnectionInfo', function (connId) {
         // $('#'+connId).remove();
-        users_connectionID[connId] = null;
-        users_connection[connId] = close();
-        users_connection[connId]= null;
+        if (users_connection[connId]) {
+            users_connection[connId].close();
+            users_connection[connId] = null;
+            users_connectionID[connId] = null;
+        }
+
         // if (remoteVideoStream[connId]){
         //     remoteVideoStream[connId].getTracks().forEach(t => {
         //         t.stop();
