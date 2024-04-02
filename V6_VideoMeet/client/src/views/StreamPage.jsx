@@ -9,9 +9,28 @@ import MultiUsersCard from '../Components/Video Meet/getMultiUsersCard.jsx';
 
 const Stream = () => {
   var users_connection = []; // Array to store user connections
+  let rtpVideoSenders = [];
+
   const { globalState, updateGlobalState } = useGlobalState();
   const [existingUsersData, setExistingUsersData] = useState([]);
 
+  function updateMediaSenders(track, rtpSenders) {
+    for (var con_id in users_connection) {
+      var connection = users_connection[con_id];
+      if (
+        connection &&
+        (connection.connectionState == "new" ||
+          connection.connectionState == "connecting" ||
+          connection.connectionState == "connected")
+      ) {
+        if (rtpSenders[con_id] && rtpSenders[con_id].track) {
+          rtpSenders[con_id].replaceTrack(track);
+        } else {
+          rtpSenders[con_id] = users_connection[con_id].addTrack(track);
+        }
+      }
+    }
+  }
 
 
   var iceConfig = {
@@ -48,10 +67,12 @@ const Stream = () => {
       });
     };
 
+
+
     async function createConnection(connId) {
       var connection = new RTCPeerConnection(iceConfig);
       // console.log('connection created: ', connection)
-  
+
       connection.onicecandidate = function (event) {
         if (event.candidate) {
           sdpFunction(
@@ -64,21 +85,21 @@ const Stream = () => {
           console.log('ice gathering is completed')
         }
       }
-  
-      const sendChannel = connection.createDataChannel("sendChannel");
-      sendChannel.onopen = e => console.log("open!!!!");
-      sendChannel.onclose = e => console.log("closed!!!!!!");
+
+      // const sendChannel = connection.createDataChannel("sendChannel");
+      // sendChannel.onopen = e => console.log("open!!!!");
+      // sendChannel.onclose = e => console.log("closed!!!!!!");
       // sendChannel.onerror = error => console.error("Error on data channel:", error);
-  
+
       connection.onnegotiationneeded = async function (event) {
         await createOffer(connId);
       };
-  
+
       // connection.ontrack = function (event) {
       //     if (!remoteVideoStream[connId]) {
       //         remoteVideoStream[connId] = new MediaStream();
       //     }
-  
+
       //     if (event.track.kind == "video") {
       //         remoteVideoStream[connId]
       //             .getTracks()
@@ -99,21 +120,21 @@ const Stream = () => {
       //         remoteAudioDiv.load();
       //     }
       // };
-  
+
       users_connection[connId] = connection;
       // updateMediaSenders(mediaTrack, rtpVideoSenders);
       return connection;
     }
-  
+
     // Function to create offer
     async function createOffer(connid) {
       var connection = users_connection[connid];
       var offer = await connection.createOffer();
-  
+
       console.log('inside create offer')
       await connection.setLocalDescription(offer);
-      console.log('local description, offer: ', connection.localDescription)
-  
+      console.log('local description, offer created: ', connection.localDescription)
+
       sdpFunction(
         JSON.stringify({
           offer: connection.localDescription,
@@ -121,32 +142,32 @@ const Stream = () => {
         connid
       );
     }
-  
+
     // Function to process SDP message
     async function sdpProcess(message, from_connid) {
       message = JSON.parse(message);
-  
+
       if (message.answer) {
-        console.log('answer received', message.answer)
         await users_connection[from_connid].setRemoteDescription(
           new RTCSessionDescription(message.answer)
         );
+        console.log('RemoteDescription, answer received', message.answer)
       } else if (message.offer) {
-        console.log('offer received', message.offer)
-  
+
         if (!users_connection[from_connid]) {
           await createConnection(from_connid);
         }
-  
+
         await users_connection[from_connid].setRemoteDescription(
           new RTCSessionDescription(message.offer)
         );
-  
+        console.log('RemoteDescription, offer received', message.offer)
+
         var answer = await users_connection[from_connid].createAnswer();
-  
-        console.log('inside offer received, answer created:')
+
+        // console.log('inside offer received, answer created:')
         await users_connection[from_connid].setLocalDescription(answer);
-        console.log('local description, answer: ', users_connection[from_connid].localDescription)
+        console.log('local description, answer created: ', users_connection[from_connid].localDescription)
         sdpFunction(
           JSON.stringify({
             answer: answer,
@@ -226,7 +247,7 @@ const Stream = () => {
 
   return (
     <Wrapper>
-      <MultiUsersCard localName={globalState.name} localMeetingId={globalState.meetingId} existingUsersData={existingUsersData} />
+      <MultiUsersCard localName={globalState.name} localMeetingId={globalState.meetingId} existingUsersData={existingUsersData} updateMediaSenders={updateMediaSenders} rtpVideoSenders={rtpVideoSenders} />
       {/* <GetVideoContainers localName={globalState.name} localMeetingId={globalState.meetingId} existingUsersData={existingUsersData} /> */}
       <Footer localMeetingId={globalState.meetingId} />
     </Wrapper>
