@@ -8,12 +8,11 @@ import { IoMdMicOff } from "react-icons/io";
 import Avatar from '@mui/joy/Avatar';
 let vStream;
 
-const MultiUsersCard = ({ localName, localMeetingId, existingUsersData, updateMediaSenders, rtpVideoSenders }) => {
+const MultiUsersCard = ({ localName, localMeetingId, existingUsersData, updateMediaSenders, rtpVideoSenders, remoteVideosRef, setRemoteVideoRef }) => {
 
     const { globalState } = useGlobalState();
     var localVideoRef = useRef(null);
    
-
 
     async function processMedia() {
         try {
@@ -89,7 +88,14 @@ const MultiUsersCard = ({ localName, localMeetingId, existingUsersData, updateMe
 
                 return <Card key={index} className='smallVideoMainCard' component="li" sx={smallVideoStyling.cardStyling}>
                     <CardCover sx={smallVideoStyling.cardCoverStyling}>
-                        <video className='localVideo'
+                        <video 
+                        // ref={remoteVideosRef.current[user.connectionId]}
+                        ref={ref => {
+                            remoteVideosRef.current[user.connectionId] = ref; // Set reference using connectionId
+                            if (typeof setRemoteVideoRef === 'function') {
+                              setRemoteVideoRef(user.connectionId, ref); // Call the callback function with connectionId
+                            }
+                          }} 
                             autoPlay
                             loop
                             muted

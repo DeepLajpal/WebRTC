@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import Footer from '../Components/Video Meet/getFooter.jsx';
 import GetVideoContainers from '../Components/Video Meet/getVideoContainers.jsx';
 import styled from 'styled-components';
@@ -10,9 +10,13 @@ import MultiUsersCard from '../Components/Video Meet/getMultiUsersCard.jsx';
 const Stream = () => {
   var users_connection = []; // Array to store user connections
   let rtpVideoSenders = [];
+  var remoteVideoStream = []; // Array to store remote video streams
+
+  var remoteVideosRef = useRef({});
 
   const { globalState, updateGlobalState } = useGlobalState();
   const [existingUsersData, setExistingUsersData] = useState([]);
+
 
   function updateMediaSenders(track, rtpSenders) {
     for (var con_id in users_connection) {
@@ -95,31 +99,33 @@ const Stream = () => {
         await createOffer(connId);
       };
 
-      // connection.ontrack = function (event) {
-      //     if (!remoteVideoStream[connId]) {
-      //         remoteVideoStream[connId] = new MediaStream();
-      //     }
+      connection.ontrack = function (event) {
+        if (!remoteVideoStream[connId]) {
+          remoteVideoStream[connId] = new MediaStream();
+        }
 
-      //     if (event.track.kind == "video") {
-      //         remoteVideoStream[connId]
-      //             .getTracks()
-      //             .forEach((t) => remoteVideoStream[connId].removeTrack(t));
-      //         remoteVideoStream[connId].addTrack(event.track);
-      //         var remoteVideoDiv = document.getElementById("video_" + connId);
-      //         remoteVideoDiv.srcObject = null;
-      //         remoteVideoDiv.srcObject = remoteVideoStream[connId];
-      //         remoteVideoDiv.load();
-      //     } else if (event.track.kind == "audio") {
-      //         remoteAudioStream[connId]
-      //             .getTracks()
-      //             .forEach((t) => remoteAudioStream[connId].removeTrack(t));
-      //         remoteAudioStream[connId].addTrack(event.track);
-      //         var remoteAudioDiv = document.getElementById("audio_" + connId);
-      //         remoteAudioDiv.srcObject = null;
-      //         remoteAudioDiv.srcObject = remoteAudioStream[connId];
-      //         remoteAudioDiv.load();
-      //     }
-      // };
+        if (event.track.kind == "video") {
+          remoteVideoStream[connId]
+            .getTracks()
+            .forEach((t) => remoteVideoStream[connId].removeTrack(t));
+          remoteVideoStream[connId].addTrack(event.track);
+          // var remoteVideoDiv = document.getElementById("video_" + connId);
+          var remoteVideoDiv = remoteVideosRef.current[connId];
+          remoteVideoDiv.srcObject = null;
+          remoteVideoDiv.srcObject = remoteVideoStream[connId];
+          remoteVideoDiv.load();
+        }
+        // else if (event.track.kind == "audio") {
+        //     remoteAudioStream[connId]
+        //         .getTracks()
+        //         .forEach((t) => remoteAudioStream[connId].removeTrack(t));
+        //     remoteAudioStream[connId].addTrack(event.track);
+        //     var remoteAudioDiv = document.getElementById("audio_" + connId);
+        //     remoteAudioDiv.srcObject = null;
+        //     remoteAudioDiv.srcObject = remoteAudioStream[connId];
+        //     remoteAudioDiv.load();
+        // }
+      };
 
       users_connection[connId] = connection;
       // updateMediaSenders(mediaTrack, rtpVideoSenders);
@@ -247,7 +253,14 @@ const Stream = () => {
 
   return (
     <Wrapper>
-      <MultiUsersCard localName={globalState.name} localMeetingId={globalState.meetingId} existingUsersData={existingUsersData} updateMediaSenders={updateMediaSenders} rtpVideoSenders={rtpVideoSenders} />
+      <MultiUsersCard localName={globalState.name}
+        localMeetingId={globalState.meetingId}
+        existingUsersData={existingUsersData}
+        updateMediaSenders={updateMediaSenders}
+        rtpVideoSenders={rtpVideoSenders}
+        remoteVideosRef={remoteVideosRef}
+        setRemoteVideoRef={(connectionId, ref) => remoteVideosRef.current[connectionId] = ref} // Pass callback function with connectionId
+      />
       {/* <GetVideoContainers localName={globalState.name} localMeetingId={globalState.meetingId} existingUsersData={existingUsersData} /> */}
       <Footer localMeetingId={globalState.meetingId} />
     </Wrapper>
