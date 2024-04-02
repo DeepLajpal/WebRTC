@@ -11,6 +11,7 @@ const Stream = () => {
   var users_connection = []; // Array to store user connections
   let rtpVideoSenders = [];
   var remoteVideoStream = []; // Array to store remote video streams
+  var mediaTrack;
 
   var remoteVideosRef = useRef({});
 
@@ -128,7 +129,7 @@ const Stream = () => {
       };
 
       users_connection[connId] = connection;
-      // updateMediaSenders(mediaTrack, rtpVideoSenders);
+      updateMediaSenders(mediaTrack, rtpVideoSenders);
       return connection;
     }
 
@@ -260,6 +261,8 @@ const Stream = () => {
         rtpVideoSenders={rtpVideoSenders}
         remoteVideosRef={remoteVideosRef}
         setRemoteVideoRef={(connectionId, ref) => remoteVideosRef.current[connectionId] = ref} // Pass callback function with connectionId
+        mediaTrack={mediaTrack}
+        setMediaTrack={(track) => mediaTrack = track} // Pass callback function to set mediaTrack
       />
       {/* <GetVideoContainers localName={globalState.name} localMeetingId={globalState.meetingId} existingUsersData={existingUsersData} /> */}
       <Footer localMeetingId={globalState.meetingId} />

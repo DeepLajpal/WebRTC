@@ -8,7 +8,7 @@ import { IoMdMicOff } from "react-icons/io";
 import Avatar from '@mui/joy/Avatar';
 let vStream;
 
-const MultiUsersCard = ({ localName, localMeetingId, existingUsersData, updateMediaSenders, rtpVideoSenders, remoteVideosRef, setRemoteVideoRef }) => {
+const MultiUsersCard = ({ localName, localMeetingId, existingUsersData, updateMediaSenders, rtpVideoSenders, remoteVideosRef, setRemoteVideoRef, mediaTrack, setMediaTrack }) => {
 
     const { globalState } = useGlobalState();
     var localVideoRef = useRef(null);
@@ -24,7 +24,8 @@ const MultiUsersCard = ({ localName, localMeetingId, existingUsersData, updateMe
                 audio: false,
             });
 
-            const mediaTrack = vStream.getVideoTracks()[0];
+            mediaTrack = vStream.getVideoTracks()[0];
+            setMediaTrack(mediaTrack);
             if (localVideoRef.current) {
                 localVideoRef.current.srcObject = new MediaStream([mediaTrack]);
                 updateMediaSenders(mediaTrack, rtpVideoSenders);
