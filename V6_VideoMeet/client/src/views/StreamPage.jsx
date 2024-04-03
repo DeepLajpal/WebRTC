@@ -38,11 +38,15 @@ const Stream = () => {
   }
 
 
-  
+  useEffect(() => {
+    if (mediaTrack) {
+      updateMediaSenders(mediaTrack, rtpVideoSenders);
+    }
+  }, [mediaTrack, rtpVideoSenders]);
 
 
   useEffect(() => {
-    let socket = initSocket(globalState.name, globalState.meetingId, existingUsersData, setExistingUsersData);
+    let socket = initSocket(globalState.name, globalState.meetingId);
 
 
     // Function to send SDP message to signaling server
@@ -73,7 +77,7 @@ const Stream = () => {
       ],
     };
 
-    async function createConnection(connId) {
+    async function createConnection(connId, isRequestComingFromUser) {
       var connection = new RTCPeerConnection(iceConfig);
       // console.log('connection created: ', connection)
 
@@ -96,7 +100,11 @@ const Stream = () => {
       // sendChannel.onerror = error => console.error("Error on data channel:", error);
 
       connection.onnegotiationneeded = async function (event) {
-        await createOffer(connId);
+        if (isRequestComingFromUser === "false") {
+          await createOffer(connId, isRequestComingFromUser);
+        }else{
+          console.log('waiting for offer to be created by the other user')
+        }
       };
 
       connection.ontrack = function (event) {
@@ -128,22 +136,35 @@ const Stream = () => {
       };
 
       users_connection[connId] = connection;
-      if (!mediaTrack) {
+
+      try {
+        updateMediaSenders(mediaTrack, rtpVideoSenders);
+      } catch (error) {
         console.log('Media track not available');
-        return connection;
       }
-      updateMediaSenders(mediaTrack, rtpVideoSenders);
       return connection;
     }
 
     // Function to create offer
-    async function createOffer(connid) {
+    async function createOffer(connid, isRequestComingFromUser) {
       var connection = users_connection[connid];
-      var offer = await connection.createOffer();
 
       console.log('inside create offer')
-      await connection.setLocalDescription(offer);
-      console.log('local description, offer created: ', connection.localDescription)
+      try {
+        if (!connection.localDescription && connection.signalingState !== 'have-remote-offer') {
+
+            var offer = await connection.createOffer();
+            await connection.setLocalDescription(offer);
+            console.log('local description, offer created: ', connection.localDescription)
+
+          } else {
+            console.log('local description already exists, which is remote offer ')
+          }
+
+
+      } catch (error) {
+        console.log("error inside the create offer: ", error);
+      }
 
       sdpFunction(
         JSON.stringify({
@@ -158,32 +179,56 @@ const Stream = () => {
       message = JSON.parse(message);
 
       if (message.answer) {
-        await users_connection[from_connid].setRemoteDescription(
-          new RTCSessionDescription(message.answer)
-        );
-        console.log('RemoteDescription, answer received', message.answer)
+        try {
+          if
+            (!users_connection[from_connid].remoteDescription) {
+
+            await users_connection[from_connid].setRemoteDescription(
+              new RTCSessionDescription(message.answer)
+            );
+            console.log('RemoteDescription, answer received', message.answer)
+
+          }
+        } catch (error) {
+          console.log("error inside the sdp process message.answer: ", error);
+        }
       } else if (message.offer) {
 
         if (!users_connection[from_connid]) {
           await createConnection(from_connid);
         }
 
-        await users_connection[from_connid].setRemoteDescription(
-          new RTCSessionDescription(message.offer)
-        );
-        console.log('RemoteDescription, offer received', message.offer)
+        try {
+          if (!users_connection[from_connid].remoteDescription && users_connection[from_connid].signalingState !== 'have-local-offer') {
+            await users_connection[from_connid].setRemoteDescription(
+              new RTCSessionDescription(message.offer)
+            );
+            console.log('RemoteDescription, offer received', message.offer)
+          }
+        } catch (error) {
+          console.log("error inside the sdp process message.offer: ", error);
+        }
 
-        var answer = await users_connection[from_connid].createAnswer();
 
         // console.log('inside offer received, answer created:')
-        await users_connection[from_connid].setLocalDescription(answer);
-        console.log('local description, answer created: ', users_connection[from_connid].localDescription)
-        sdpFunction(
-          JSON.stringify({
-            answer: answer,
-          }),
-          from_connid
-        );
+        try {
+          if (
+            users_connection[from_connid].signalingState === "have-remote-offer"
+          ) {
+            var answer = await users_connection[from_connid].createAnswer();
+            await users_connection[from_connid].setLocalDescription(answer);
+            console.log('local description, answer created: ', users_connection[from_connid].localDescription)
+            sdpFunction(
+              JSON.stringify({
+                answer: answer,
+              }),
+              from_connid
+            );
+          }
+
+        } catch (error) {
+          console.log("error inside the sdp process message.offer: ", error);
+        }
       } else if (message.iceCandidate) {
         if (!users_connection[from_connid]) {
           await createConnection(from_connid);
@@ -200,13 +245,13 @@ const Stream = () => {
     }
 
     socket.on("currentMeetingUsers_to_inform_about_new_connection_information", function (newUser) {
-      createConnection(newUser.connectionId);
+      createConnection(newUser.connectionId, "false");
       setExistingUsersData(prevUsers => [...prevUsers, newUser]);
     });
 
     socket.on("new_user_to_inform_about_currentMeetingUsers", function (currentMeetingUsers) {
       for (let i = 0; i < currentMeetingUsers.length; i++) {
-        createConnection(currentMeetingUsers[i].connectionId);
+        createConnection(currentMeetingUsers[i].connectionId, "true");
         setExistingUsersData(prevUsers => [...prevUsers, currentMeetingUsers[i]]);
       }
     });
@@ -257,8 +302,11 @@ const Stream = () => {
 
   return (
     <Wrapper>
-      <MultiUsersCard localName={globalState.name}
+      <MultiUsersCard
+        localName={globalState.name}
         localMeetingId={globalState.meetingId}
+        showVideo={globalState.Video}
+        playAudio={globalState.Mic}
         existingUsersData={existingUsersData}
         updateMediaSenders={updateMediaSenders}
         rtpVideoSenders={rtpVideoSenders}

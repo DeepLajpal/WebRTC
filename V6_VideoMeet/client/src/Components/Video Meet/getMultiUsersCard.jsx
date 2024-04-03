@@ -2,15 +2,13 @@ import React, { useState, useEffect, useRef } from 'react';
 import Card from '@mui/joy/Card';
 import CardCover from '@mui/joy/CardCover';
 import styled from 'styled-components';
-import { useGlobalState } from '../../ContextAPI/GlobalStateContext';
 import { IoMdMic } from "react-icons/io";
 import { IoMdMicOff } from "react-icons/io";
 import Avatar from '@mui/joy/Avatar';
 let vStream;
 
-const MultiUsersCard = ({ localName, localMeetingId, existingUsersData, updateMediaSenders, rtpVideoSenders, remoteVideosRef, setRemoteVideoRef, mediaTrack, setMediaTrack }) => {
+const MultiUsersCard = ({ localName, localMeetingId, showVideo, playAudio, existingUsersData, updateMediaSenders, rtpVideoSenders, remoteVideosRef, setRemoteVideoRef, mediaTrack, setMediaTrack }) => {
 
-    const { globalState } = useGlobalState();
     var localVideoRef = useRef(null);
    
 
@@ -45,21 +43,21 @@ const MultiUsersCard = ({ localName, localMeetingId, existingUsersData, updateMe
     }, []);
 
     useEffect(() => {
-            if (!globalState.Video) {
+            if (!showVideo) {
                 vStream.getTracks().forEach(track => track.stop())
                 console.log('Video Stopped');
             } else {
                 processMedia();
                 console.log('Video Started');
             }
-    }, [globalState.Video]);
+    }, [showVideo]);
 
 
 
 
     const smallVideoStyling = {
-        cardStyling: { minWidth: '234px', width: '234px', minHeight: '132px', height: '132px', background: !globalState.Video ? '#4A4E51' : 'none' },
-        cardCoverStyling: { display: !globalState.Video ? 'none' : null },
+        cardStyling: { minWidth: '234px', width: '234px', minHeight: '132px', height: '132px', background: !showVideo ? '#4A4E51' : 'none' },
+        cardCoverStyling: { display: !showVideo ? 'none' : null },
     }
 
     return (
@@ -75,7 +73,7 @@ const MultiUsersCard = ({ localName, localMeetingId, existingUsersData, updateMe
                 </CardCover>
                 <div className='cardContent' style={{ height: '100%', width: '100%' }}>
                     <div className='micDiv'>
-                        <Avatar sx={{ background: '#3E4044', color: 'white' }} color='white' alt={'Mic'} size="sm" >{globalState.Mic ? <IoMdMic /> : <IoMdMicOff />}</Avatar>
+                        <Avatar sx={{ background: '#3E4044', color: 'white' }} color='white' alt={'Mic'} size="sm" >{playAudio ? <IoMdMic /> : <IoMdMicOff />}</Avatar>
                     </div>
                     <div className='avatarDiv'>
                         <Avatar alt={`${localName}`} size="md" />
@@ -105,7 +103,7 @@ const MultiUsersCard = ({ localName, localMeetingId, existingUsersData, updateMe
                     </CardCover>
                     <div className='cardContent' style={{ height: '100%', width: '100%' }}>
                         <div className='micDiv'>
-                            <Avatar sx={{ background: '#3E4044', color: 'white' }} color='white' alt={'Mic'} size="sm" >{globalState.Mic ? <IoMdMic /> : <IoMdMicOff />}</Avatar>
+                            <Avatar sx={{ background: '#3E4044', color: 'white' }} color='white' alt={'Mic'} size="sm" >{playAudio ? <IoMdMic /> : <IoMdMicOff />}</Avatar>
                         </div>
                         <div className='avatarDiv'>
                             <Avatar alt={user?.user_id} size="md" />
