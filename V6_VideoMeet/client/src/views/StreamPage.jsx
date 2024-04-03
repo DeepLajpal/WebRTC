@@ -38,31 +38,12 @@ const Stream = () => {
   }
 
 
-  var iceConfig = {
-    iceServers: [
-      {
-        urls: "stun:stun.l.google.com:19302",
-      },
-      {
-        urls: "stun:stun1.l.google.com:19302",
-      },
-      {
-        urls: "stun:stun2.l.google.com:19302",
-      },
-      {
-        urls: "stun:stun3.l.google.com:19302",
-      },
-      {
-        urls: "stun:stun4.l.google.com:19302",
-      },
-    ],
-  };
-
-  // Function to create a new connection
+  
 
 
   useEffect(() => {
     let socket = initSocket(globalState.name, globalState.meetingId, existingUsersData, setExistingUsersData);
+
 
     // Function to send SDP message to signaling server
     var sdpFunction = (data, to_connid) => {
@@ -72,7 +53,25 @@ const Stream = () => {
       });
     };
 
-
+    var iceConfig = {
+      iceServers: [
+        {
+          urls: "stun:stun.l.google.com:19302",
+        },
+        {
+          urls: "stun:stun1.l.google.com:19302",
+        },
+        {
+          urls: "stun:stun2.l.google.com:19302",
+        },
+        {
+          urls: "stun:stun3.l.google.com:19302",
+        },
+        {
+          urls: "stun:stun4.l.google.com:19302",
+        },
+      ],
+    };
 
     async function createConnection(connId) {
       var connection = new RTCPeerConnection(iceConfig);
@@ -129,6 +128,10 @@ const Stream = () => {
       };
 
       users_connection[connId] = connection;
+      if (!mediaTrack) {
+        console.log('Media track not available');
+        return connection;
+      }
       updateMediaSenders(mediaTrack, rtpVideoSenders);
       return connection;
     }
