@@ -79,7 +79,7 @@ const Stream = () => {
       ],
     };
 
-    async function createConnection(connId, isRequestComingFromUser) {
+    async function createConnection(connId, isRequestComingFromNewUser) {
       var connection = new RTCPeerConnection(iceConfig);
       // console.log('connection created: ', connection)
 
@@ -102,8 +102,8 @@ const Stream = () => {
       // sendChannel.onerror = error => console.error("Error on data channel:", error);
 
       connection.onnegotiationneeded = async function (event) {
-        if (isRequestComingFromUser === "false") {
-          await createOffer(connId, isRequestComingFromUser);
+        if (isRequestComingFromNewUser === "false") {
+          await createOffer(connId, isRequestComingFromNewUser);
         } else {
           console.log('waiting for offer to be created by the other user')
         }
@@ -149,7 +149,7 @@ const Stream = () => {
     }
 
     // Function to create offer
-    async function createOffer(connid, isRequestComingFromUser) {
+    async function createOffer(connid, isRequestComingFromNewUser) {
       var connection = users_connection[connid];
 
       console.log('inside create offer')
@@ -251,7 +251,19 @@ const Stream = () => {
 
       try {
         await setExistingUsersData(prevUsers => [...prevUsers, newUser]);
-        await createConnection(newUser.connectionId, "false");
+        if (mediaTrack) {
+
+          const userExists = existingUsersData.some(user => user.connectionId === newUser.connectionId);
+
+          if (!userExists) {
+
+            await createConnection(newUser.connectionId, "false");
+
+          }
+
+        } else {
+          console.log('mediaTrack not available')
+        }
       } catch (error) {
         console.log('error inside currentMeetingUsers_to_inform_about_new_connection_information: ', error)
       }
@@ -261,7 +273,16 @@ const Stream = () => {
       for (let i = 0; i < currentMeetingUsers.length; i++) {
         try {
           await setExistingUsersData(prevUsers => [...prevUsers, currentMeetingUsers[i]]);
-          await createConnection(currentMeetingUsers[i].connectionId, "true");
+          if (mediaTrack) {
+
+            const userExists = existingUsersData.some(user => user.connectionId === newUser.connectionId);
+
+            if (!userExists) {
+              await createConnection(currentMeetingUsers[i].connectionId, "true");
+            }
+          } else {
+            console.log('mediaTrack not available')
+          }
         } catch (error) {
           console.log('error inside new_user_to_inform_about_currentMeetingUsers: ', error)
         }
