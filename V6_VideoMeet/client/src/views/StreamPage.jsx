@@ -39,7 +39,9 @@ const Stream = () => {
 
 
   useEffect(() => {
+    console.log("inside useEffect of mediaTrack: useEffect");
     if (mediaTrack) {
+      console.log("inside if of mediaTrack useEffect")
       updateMediaSenders(mediaTrack, rtpVideoSenders);
     }
   }, [mediaTrack]);
@@ -102,12 +104,13 @@ const Stream = () => {
       connection.onnegotiationneeded = async function (event) {
         if (isRequestComingFromUser === "false") {
           await createOffer(connId, isRequestComingFromUser);
-        }else{
+        } else {
           console.log('waiting for offer to be created by the other user')
         }
       };
 
       connection.ontrack = function (event) {
+        console.log('ontrack event: ', event)
         if (!remoteVideoStream[connId]) {
           remoteVideoStream[connId] = new MediaStream();
         }
@@ -153,13 +156,13 @@ const Stream = () => {
       try {
         if (!connection.localDescription && connection.signalingState !== 'have-remote-offer') {
 
-            var offer = await connection.createOffer();
-            await connection.setLocalDescription(offer);
-            console.log('local description, offer created: ', connection.localDescription)
+          var offer = await connection.createOffer();
+          await connection.setLocalDescription(offer);
+          console.log('local description, offer created: ', connection.localDescription)
 
-          } else {
-            console.log('local description already exists, which is remote offer ')
-          }
+        } else {
+          console.log('local description already exists, which is remote offer ')
+        }
 
 
       } catch (error) {
@@ -244,15 +247,24 @@ const Stream = () => {
       }
     }
 
-    socket.on("currentMeetingUsers_to_inform_about_new_connection_information", function (newUser) {
-      createConnection(newUser.connectionId, "false");
-      setExistingUsersData(prevUsers => [...prevUsers, newUser]);
+    socket.on("currentMeetingUsers_to_inform_about_new_connection_information", async function (newUser) {
+
+      try {
+        await setExistingUsersData(prevUsers => [...prevUsers, newUser]);
+        await createConnection(newUser.connectionId, "false");
+      } catch (error) {
+        console.log('error inside currentMeetingUsers_to_inform_about_new_connection_information: ', error)
+      }
     });
 
-    socket.on("new_user_to_inform_about_currentMeetingUsers", function (currentMeetingUsers) {
+    socket.on("new_user_to_inform_about_currentMeetingUsers", async function (currentMeetingUsers) {
       for (let i = 0; i < currentMeetingUsers.length; i++) {
-        createConnection(currentMeetingUsers[i].connectionId, "true");
-        setExistingUsersData(prevUsers => [...prevUsers, currentMeetingUsers[i]]);
+        try {
+          await setExistingUsersData(prevUsers => [...prevUsers, currentMeetingUsers[i]]);
+          await createConnection(currentMeetingUsers[i].connectionId, "true");
+        } catch (error) {
+          console.log('error inside new_user_to_inform_about_currentMeetingUsers: ', error)
+        }
       }
     });
 
@@ -265,11 +277,11 @@ const Stream = () => {
       // users_connectionID[connId] = null;
       // users_connection[connId] = close();
       // users_connection[connId]= null;
-      // if (remoteVideoStream[connId]){
-      //     remoteVideoStream[connId].getTracks().forEach(t => {
+      // if (remoteVideoStream[closedConnectionID]){
+      //     remoteVideoStream[closedConnectionID].getTracks().forEach(t => {
       //         t.stop();
       //     });
-      //     remoteVideoStream[connId] = null;
+      //     remoteVideoStream[closedConnectionID] = null;
       // }
       // console.log('closedConnectionInfo: ', connId)
 
@@ -292,6 +304,7 @@ const Stream = () => {
     return () => {
       socket.disconnect();
       console.log('socket clenup done');
+
     }
   }, [])
 
