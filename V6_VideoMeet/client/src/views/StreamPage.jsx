@@ -37,6 +37,18 @@ const Stream = () => {
     }
   }
 
+  const closeAllConnections = () => {
+    for (var con_id in users_connection) {
+      var connection = users_connection[con_id];
+      if (connection) {
+        connection.close();
+        users_connection[con_id] = null;
+        connection = null;
+      }
+    }
+    setExistingUsersData([]);
+  }
+
 
   useEffect(() => {
     console.log("inside useEffect of mediaTrack: useEffect");
@@ -298,12 +310,12 @@ const Stream = () => {
       // users_connectionID[connId] = null;
       // users_connection[connId] = close();
       // users_connection[connId]= null;
-      // if (remoteVideoStream[closedConnectionID]){
-      //     remoteVideoStream[closedConnectionID].getTracks().forEach(t => {
-      //         t.stop();
-      //     });
-      //     remoteVideoStream[closedConnectionID] = null;
-      // }
+      if (remoteVideoStream[closedConnectionID]) {
+        remoteVideoStream[closedConnectionID].getTracks().forEach(t => {
+          t.stop();
+        });
+        remoteVideoStream[closedConnectionID] = null;
+      }
       // console.log('closedConnectionInfo: ', connId)
 
       setExistingUsersData(prevUsers => prevUsers.filter(user => user.connectionId !== closedConnectionID));
@@ -325,6 +337,8 @@ const Stream = () => {
     return () => {
       socket.disconnect();
       console.log('socket clenup done');
+
+      closeAllConnections();
 
     }
   }, [])
