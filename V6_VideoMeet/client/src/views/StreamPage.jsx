@@ -264,6 +264,7 @@ const Stream = () => {
       try {
         await setExistingUsersData(prevUsers => [...prevUsers, newUser]);
         if (mediaTrack) {
+          console.log('local mediaTrack available')
 
           const userExists = existingUsersData.some(user => user.connectionId === newUser.connectionId);
 
@@ -274,7 +275,7 @@ const Stream = () => {
           }
 
         } else {
-          console.log('mediaTrack not available')
+          console.log('local mediaTrack not available')
         }
       } catch (error) {
         console.log('error inside currentMeetingUsers_to_inform_about_new_connection_information: ', error)
@@ -286,6 +287,8 @@ const Stream = () => {
         try {
           await setExistingUsersData(prevUsers => [...prevUsers, currentMeetingUsers[i]]);
           if (mediaTrack) {
+            console.log('local mediaTrack available')
+
 
             const userExists = existingUsersData.some(user => user.connectionId === newUser.connectionId);
 
@@ -293,7 +296,7 @@ const Stream = () => {
               await createConnection(currentMeetingUsers[i].connectionId, "true");
             }
           } else {
-            console.log('mediaTrack not available')
+            console.log('local mediaTrack not available')
           }
         } catch (error) {
           console.log('error inside new_user_to_inform_about_currentMeetingUsers: ', error)
