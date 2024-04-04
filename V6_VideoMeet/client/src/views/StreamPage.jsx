@@ -42,7 +42,7 @@ const Stream = () => {
     if (mediaTrack) {
       updateMediaSenders(mediaTrack, rtpVideoSenders);
     }
-  }, [mediaTrack, rtpVideoSenders]);
+  }, [mediaTrack]);
 
 
   useEffect(() => {
