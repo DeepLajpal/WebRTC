@@ -268,7 +268,7 @@ const Stream = () => {
 
           const userExists = existingUsersData.some(user => user.connectionId === newUser.connectionId);
 
-          if (!userExists) {
+          if (userExists) {
 
             await createConnection(newUser.connectionId, "false");
 
@@ -290,9 +290,10 @@ const Stream = () => {
             console.log('local mediaTrack available')
 
 
+
             const userExists = existingUsersData.some(user => user.connectionId === newUser.connectionId);
 
-            if (!userExists) {
+            if (userExists) {
               await createConnection(currentMeetingUsers[i].connectionId, "true");
             }
           } else {
