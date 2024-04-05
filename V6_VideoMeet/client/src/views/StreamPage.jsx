@@ -266,13 +266,15 @@ const Stream = () => {
         if (mediaTrack) {
           console.log('local mediaTrack available')
 
-          const userExists = existingUsersData.some(user => user.connectionId === newUser.connectionId);
+          // const userExists = existingUsersData.some(user => user.connectionId === newUser.connectionId);
 
-          if (userExists) {
+          // if (userExists) {
 
             await createConnection(newUser.connectionId, "false");
 
-          }
+          // }else{
+          //   console.log('user does not exist')
+          // }
 
         } else {
           console.log('local mediaTrack not available')
@@ -291,11 +293,13 @@ const Stream = () => {
 
 
 
-            const userExists = existingUsersData.some(user => user.connectionId === newUser.connectionId);
+            // const userExists = existingUsersData.some(user => user.connectionId === currentMeetingUsers[i].connectionId);
 
-            if (userExists) {
+            // if (userExists) {
               await createConnection(currentMeetingUsers[i].connectionId, "true");
-            }
+            // }else{
+            //   console.log('user does not exist')
+            // }
           } else {
             console.log('local mediaTrack not available')
           }
