@@ -7,7 +7,7 @@ import { IoMdMicOff } from "react-icons/io";
 import Avatar from '@mui/joy/Avatar';
 let vStream;
 
-const MultiUsersCard = ({ localName, localMeetingId, showVideo, playAudio, existingUsersData, updateMediaSenders, rtpVideoSenders, remoteVideosRef, setRemoteVideoRef, mediaTrack, setMediaTrack }) => {
+const MultiUsersCard = ({ localName, showVideo, playAudio, existingUsersData, updateMediaSenders, remoteVideosRef, setRemoteVideoRef, setMediaTrack }) => {
 
     var localVideoRef = useRef(null);
    
@@ -22,14 +22,14 @@ const MultiUsersCard = ({ localName, localMeetingId, showVideo, playAudio, exist
                 audio: false,
             });
 
-            mediaTrack = vStream.getVideoTracks()[0];
-            setMediaTrack(mediaTrack);
+            var localMediaTrack = vStream.getVideoTracks()[0];
             if (localVideoRef.current) {
-                localVideoRef.current.srcObject = new MediaStream([mediaTrack]);
-                updateMediaSenders(mediaTrack, rtpVideoSenders);
+                localVideoRef.current.srcObject = new MediaStream([localMediaTrack]);
             } else {
                 console.log('Local Video Ref is not available');
             }
+            setMediaTrack(localMediaTrack);
+            updateMediaSenders(localMediaTrack);
         } catch (err) {
             console.log("Error on processing media: ", err);
         }
