@@ -4,8 +4,7 @@ import styled from 'styled-components';
 import Button from '@mui/material/Button';
 import { useNavigate } from 'react-router-dom';
 import { useGlobalState } from '../../ContextAPI/GlobalStateContext';
-
-
+import GetLocalUserDevice from './getLocalUserDevice';
 
 const GetUserInfo = ({ handleTabChange }) => {
     const meetingIdInput = useRef(null);

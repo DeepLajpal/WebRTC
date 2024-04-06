@@ -3,7 +3,7 @@ import io from 'socket.io-client';
 var socket;
 
 
-const initSocket = (username, meeting_id, existingUsersData, setExistingUsersData) => {
+const initSocket = (username, meeting_id) => {
     socket = io(import.meta.env.VITE_SOCKET_URL);
     console.log(`socket established`);
 
