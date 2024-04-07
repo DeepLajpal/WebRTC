@@ -16,41 +16,9 @@ const Stream = () => {
   var remoteVideosRef = useRef({});
 
   const { globalState } = useGlobalState();
-  const [existingUsersData, setExistingUsersData] = useState([]);
+  // const [existingUsersData, setExistingUsersData] = useState([]);
 
-
-  // function updateMediaSenders(track) {
-  //   for (var con_id in usersConnection) {
-  //     var connection = usersConnection[con_id];
-  //     if (
-  //       connection &&
-  //       (connection.connectionState == "new" ||
-  //         connection.connectionState == "connecting" ||
-  //         connection.connectionState == "connected")
-  //     ) {
-  //       if (connection[con_id] && connection[con_id].track) {
-  //         connection[con_id].replaceTrack(track);
-  //       } else {
-  //         setUsersConnection(usersConnection[con_id].addTrack(track));
-  //       }
-  //     }
-  //   }
-  // }
-
-// function updateMediaSenders(track) {
-//   setUsersConnection(prevConnections => {
-//     return prevConnections.map(connection => {
-//       if (connection && connection.track) {
-//         connection.replaceTrack(track);
-//       } else if (connection) {
-//         connection.addTrack(track);
-//       }
-//       return connection;
-//     });
-//   });
-// }
-
-
+useEffect(()=>console.log("mediaStream of stream page"),[mediaStream])
 
 
   return (
@@ -59,10 +27,10 @@ const Stream = () => {
         localName={globalState.name}
         showVideo={globalState.Video}
         playAudio={globalState.Mic}
-        setMediaTrack={setMediaStream}
+        setMediaStream={setMediaStream}
       />
       {/* <GetLocalUserMedia mediaStream={mediaStream} setMediaStream = {setMediaStream}/> */}
-      {mediaStream &&<InitializeSocket/>}
+      {mediaStream &&<InitializeSocket mediaStream = {mediaStream}/>}
       <Footer localMeetingId={globalState.meetingId} />
     </Wrapper>
   );

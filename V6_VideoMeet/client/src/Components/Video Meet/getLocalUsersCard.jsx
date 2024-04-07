@@ -5,7 +5,7 @@ import styled from 'styled-components';
 import { IoMdMic, IoMdMicOff } from "react-icons/io";
 import Avatar from '@mui/joy/Avatar';
 
-const LocalUsersCard = ({ localName, showVideo, playAudio, setMediaTrack }) => {
+const LocalUsersCard = ({ localName, showVideo, playAudio, setMediaStream }) => {
     const localVideoRef = useRef(null);
     const [localMediaStream, setLocalMediaStream] = useState(null);
 
@@ -21,7 +21,7 @@ const LocalUsersCard = ({ localName, showVideo, playAudio, setMediaTrack }) => {
                 })
                 
                 localVideoRef.current.srcObject = stream;
-                setMediaTrack(stream.getVideoTracks()[0]);
+                setMediaStream(stream.getVideoTracks()[0]);
                 setLocalMediaStream(stream);
 
         } catch (err) {
@@ -43,6 +43,7 @@ const LocalUsersCard = ({ localName, showVideo, playAudio, setMediaTrack }) => {
 
             if (localMediaStream) {
                 localMediaStream.getTracks().forEach(track => track.stop());
+                setMediaStream(localMediaStream.getVideoTracks()[0]);
                 setLocalMediaStream(null); // Reset localMediaStream state
             }
         } else {

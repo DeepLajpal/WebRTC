@@ -3,12 +3,38 @@ import { useGlobalState } from '../ContextAPI/GlobalStateContext';
 import initSocket from './socketConnection.jsx';
 
 
-const InitializeSocket = () => {
+const InitializeSocket = ({mediaStream}) => {
     var users_connection = []; // Array to store user connections
     var remoteVideoStream = []; // Array to store remote video streams
 
     const [existingUsersData, setExistingUsersData] = useState([]);
     const { globalState } = useGlobalState();
+
+    
+  function updateMediaSenders(track) {
+    console.log('updateMediaSenders called')
+    for (var con_id in users_connection) {
+      var connection = users_connection[con_id];
+      if (
+        connection &&
+        (connection.connectionState == "new" ||
+          connection.connectionState == "connecting" ||
+          connection.connectionState == "connected")
+      ) {
+        console.log('inside the if block of updateMediaSenders function')
+        if (connection[con_id] && connection[con_id].track) {
+          connection[con_id].replaceTrack(track);
+        } else {
+          users_connection[con_id].addTrack(track);
+        }
+      }
+    }
+  }
+  useEffect(() => {
+    console.log('mediaStream:', mediaStream);
+    updateMediaSenders(mediaStream);
+    console.log('mediaStream updated');
+  }, [ mediaStream ])
 
     useEffect(() => {
 
@@ -54,13 +80,11 @@ const InitializeSocket = () => {
         };
     
         async function createConnection(connId, isRequestComingFromNewUser) {
-          console.log('inside create connection')
           var connection = new RTCPeerConnection(iceConfig);
 
           connection.createDataChannel("channel");
     
           connection.onicecandidate = function (event) {
-            console.log('ice candidate event: ', event)
             if (event.candidate) {
               sdpFunction(
                 JSON.stringify({
@@ -92,27 +116,26 @@ const InitializeSocket = () => {
             //     .getTracks()
             //     .forEach((t) => remoteVideoStream[connId].removeTrack(t));
             //   remoteVideoStream[connId].addTrack(event.track);
-            //   var remoteVideoDiv = remoteVideosRef.current[connId];
-            //   remoteVideoDiv.srcObject = null;
-            //   remoteVideoDiv.srcObject = remoteVideoStream[connId];
-            //   remoteVideoDiv.load();
+            // //   var remoteVideoDiv = remoteVideosRef.current[connId];
+            // //   remoteVideoDiv.srcObject = null;
+            // //   remoteVideoDiv.srcObject = remoteVideoStream[connId];
+            // //   remoteVideoDiv.load();
             // }
           };
     
           users_connection[connId] = connection;
     
-          // try {
-          //   updateMediaSenders(mediaTrack);
-          // } catch (error) {
-          //   console.log('Media track not available');
-          // }
+        //   try {
+        //     updateMediaSenders(mediaStream);
+        //   } catch (error) {
+        //     console.log('Media track not available');
+        //   }
           return connection;
         }
     
         async function createOffer(connid, isRequestComingFromNewUser) {
           var connection = users_connection[connid];
     
-          console.log('inside create offer')
           try {
             if (!connection.localDescription && connection.signalingState !== 'have-remote-offer') {
     
@@ -208,9 +231,9 @@ const InitializeSocket = () => {
     
           try {
             await setExistingUsersData(prevUsers => [...prevUsers, newUser]);
-            console.log('informing current user done')
     
             await createConnection(newUser.connectionId, "false");
+            updateMediaSenders(mediaStream);
     
           } catch (error) {
             console.log('error inside currentMeetingUsers_to_inform_about_new_connection_information: ', error)
@@ -221,8 +244,9 @@ const InitializeSocket = () => {
           for (let i = 0; i < currentMeetingUsers.length; i++) {
             try {
               await setExistingUsersData(prevUsers => [...prevUsers, currentMeetingUsers[i]]);
-              console.log('informing new user done')
+
               await createConnection(currentMeetingUsers[i].connectionId, "true");
+              updateMediaSenders(mediaStream);
     
             } catch (error) {
               console.log('error inside new_user_to_inform_about_currentMeetingUsers: ', error)
@@ -231,10 +255,10 @@ const InitializeSocket = () => {
         });
     
         socket.on('closedConnectionInfo', function (closedConnectionID) {
-          // if (users_connection[closedConnectionID]) {
-          //   users_connection[closedConnectionID].close();
-          //   users_connection[closedConnectionID] = null;
-          // }
+          if (users_connection[closedConnectionID]) {
+            users_connection[closedConnectionID].close();
+            users_connection[closedConnectionID] = null;
+          }
     
           // if (remoteVideoStream[closedConnectionID]) {
           //   remoteVideoStream[closedConnectionID].getTracks().forEach(t => {
@@ -269,7 +293,6 @@ const InitializeSocket = () => {
     
       useEffect(() => {
         console.log("existingUsersData:", existingUsersData);
-    
       }, [existingUsersData]);
   return null;
 }
