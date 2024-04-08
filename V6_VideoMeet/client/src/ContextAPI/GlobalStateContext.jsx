@@ -16,6 +16,8 @@ export const GlobalStateProvider = ({ children }) => {
     tabValue:0,
   });
 
+
+
   const updateGlobalState = (newState) => {
     setGlobalState((prevState) => ({
       ...prevState,

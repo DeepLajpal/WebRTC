@@ -11,6 +11,28 @@ const InitializeSocket = () => {
     const [existingUsersData, setExistingUsersData] = useState([]);
     const { globalState } = useGlobalState();
 
+
+    function updateMediaSenders(track) {
+        console.log('updateMediaSenders called')
+        if(users_connection.length === 0) return;
+        for (var con_id in users_connection) {
+            var connection = users_connection[con_id];
+            if (
+                connection &&
+                (connection.connectionState == "new" ||
+                    connection.connectionState == "connecting" ||
+                    connection.connectionState == "connected")
+            ) {
+                console.log('inside the if block of updateMediaSenders function')
+                if (connection[con_id] && connection[con_id].track) {
+                    connection[con_id].replaceTrack(track);
+                } else {
+                    users_connection[con_id].addTrack(track);
+                }
+            }
+        }
+    }
+
     const sdpFunction = useCallback((data, to_connid, whoIsCalling) => {
         console.log('sdpFunction called', whoIsCalling)
         if(socketState){
