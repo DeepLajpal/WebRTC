@@ -14,8 +14,9 @@ const io = socketIo(server, {
 
 var existingConnections = [];
 
+const connectionIdMap = {};
+
 io.on("connection", (socket) => {
-    
     socket.on("users_info_to_signaling_server", (incommingConnections)=>{
         const foundIncommingUserInExistingConnections = existingConnections
             .find(existingConnection => {
@@ -71,6 +72,11 @@ io.on("connection", (socket) => {
 
         }
         console.log(`user disconnected ${socket.id}`);
+    })
+
+    socket.on('test', (data)=>{
+        console.log(data);
+        socket.emit('test', "test data from server");
     })
 
 });

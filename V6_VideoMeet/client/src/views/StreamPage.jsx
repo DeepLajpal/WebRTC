@@ -11,27 +11,27 @@ import GetLocalUserMedia from '../Components/Video Meet/getLocalUserDevice.jsx';
 const Stream = () => {
   // const [usersConnection, setUsersConnection]  = useState([]); // Array to store user connections
   // var remoteVideoStream = []; // Array to store remote video streams
-  const [mediaStream, setMediaStream] = useState(null);
+  // const [mediaStream, setMediaStream] = useState(null);
 
-  var remoteVideosRef = useRef({});
+  // var remoteVideosRef = useRef({});
 
-  const { globalState } = useGlobalState();
+  // const { globalState } = useGlobalState();
   // const [existingUsersData, setExistingUsersData] = useState([]);
 
-useEffect(()=>console.log("mediaStream of stream page"),[mediaStream])
+// useEffect(()=>console.log("mediaStream of stream page"),[mediaStream])
 
 
   return (
     <Wrapper>
-      <LocalUsersCard
+      {/* <LocalUsersCard
         localName={globalState.name}
         showVideo={globalState.Video}
         playAudio={globalState.Mic}
         setMediaStream={setMediaStream}
-      />
+      /> */}
       {/* <GetLocalUserMedia mediaStream={mediaStream} setMediaStream = {setMediaStream}/> */}
-      {mediaStream &&<InitializeSocket mediaStream = {mediaStream}/>}
-      <Footer localMeetingId={globalState.meetingId} />
+      <InitializeSocket/>
+      {/* <Footer localMeetingId={globalState.meetingId} /> */}
     </Wrapper>
   );
 }
