@@ -85,7 +85,7 @@ export default function JoySignInSignUpTemplate() {
         setSnackbarMessage("Password & Confirm Password do not match");
         setOpenSnackbar(true);
       }
-
+ 
     } else {
       const data = {
         email: formElements.email.value,
