@@ -4,19 +4,20 @@ import GlobalStyles from '@mui/joy/GlobalStyles';
 import CssBaseline from '@mui/joy/CssBaseline';
 import Box from '@mui/joy/Box';
 import Button from '@mui/joy/Button';
-import Checkbox from '@mui/joy/Checkbox';
 import Divider from '@mui/joy/Divider';
+import Typography from '@mui/joy/Typography';
+import Checkbox from '@mui/joy/Checkbox';
 import FormControl from '@mui/joy/FormControl';
 import FormLabel from '@mui/joy/FormLabel';
+import Input from '@mui/joy/Input';
+import Stack from '@mui/joy/Stack';
 import IconButton from '@mui/joy/IconButton';
 import Link from '@mui/joy/Link';
-import Input from '@mui/joy/Input';
-import Typography from '@mui/joy/Typography';
-import Stack from '@mui/joy/Stack';
 import DarkModeRoundedIcon from '@mui/icons-material/DarkModeRounded';
 import LightModeRoundedIcon from '@mui/icons-material/LightModeRounded';
 import BadgeRoundedIcon from '@mui/icons-material/BadgeRounded';
 import GoogleIcon from '../Components/Video Meet/getGoogleIcon';
+import GetSnackbar from '../Components/Common/getSnackbar';
 
 function ColorSchemeToggle(props) {
   const { onClick, ...other } = props;
@@ -42,7 +43,53 @@ function ColorSchemeToggle(props) {
   );
 }
 
-export default function JoySignInSideTemplate() {
+export default function JoySignInSignUpTemplate() {
+  const [isSignIn, setIsSignIn] = React.useState(true);
+  const [openSnackbar, setOpenSnackbar] = React.useState(false);
+  const [snackbarMessage, setSnackbarMessage] = React.useState('');
+
+  const toggleForm = () => {
+    setIsSignIn(!isSignIn);
+  };
+
+  const handleSnackbarClose = () => {
+    setOpenSnackbar(false);
+  };
+
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    const formElements = event.currentTarget.elements;
+    const password = formElements.password.value;
+    if(formElements.confirmPassword){
+
+      const confirmPassword = formElements.confirmPassword.value;
+  
+      if (password === confirmPassword) {
+        const data = {
+          email: formElements.email.value,
+          password: password,
+          confirmPassword: confirmPassword,
+          termsAgreement: formElements.termsAgreement.checked,
+        };
+        setSnackbarMessage(JSON.stringify(data, null, 2));
+        setOpenSnackbar(true);
+      } else {
+        setSnackbarMessage("Passwords do not match");
+        setOpenSnackbar(true);
+      }
+
+    }else{
+      const data = {
+        email: formElements.email.value,
+        password: password,
+        persistence: formElements.persistent.checked,
+      };
+      setSnackbarMessage(JSON.stringify(data, null, 2));
+      setOpenSnackbar(true);
+    }
+  };
+
   return (
     <CssVarsProvider defaultMode="dark" disableTransitionOnChange>
       <CssBaseline />
@@ -91,7 +138,7 @@ export default function JoySignInSideTemplate() {
               <IconButton variant="soft" color="primary" size="sm">
                 <BadgeRoundedIcon />
               </IconButton>
-              <Typography level="title-lg">Company logo</Typography>
+              <Typography level="title-lg">Video Meet</Typography>
             </Box>
             <ColorSchemeToggle />
           </Box>
@@ -118,80 +165,134 @@ export default function JoySignInSideTemplate() {
               },
             }}
           >
-            <Stack gap={4} sx={{ mb: 2 }}>
-              <Stack gap={1}>
-                <Typography component="h1" level="h3">
-                  Sign in
-                </Typography>
-                <Typography level="body-sm">
-                  New to company?{' '}
-                  <Link href="#replace-with-a-link" level="title-sm">
-                    Sign up!
-                  </Link>
-                </Typography>
-              </Stack>
-              <Button
-                variant="soft"
-                color="neutral"
-                fullWidth
-                startDecorator={<GoogleIcon />}
-              >
-                Continue with Google
-              </Button>
-            </Stack>
-            <Divider
-              sx={(theme) => ({
-                [theme.getColorSchemeSelector('light')]: {
-                  color: { xs: '#FFF', md: 'text.tertiary' },
-                },
-              })}
-            >
-              or
-            </Divider>
-            <Stack gap={4} sx={{ mt: 2 }}>
-              <form
-                onSubmit={(event) => {
-                  event.preventDefault();
-                  const formElements = event.currentTarget.elements;
-                  const data = {
-                    email: formElements.email.value,
-                    password: formElements.password.value,
-                    persistent: formElements.persistent.checked,
-                  };
-                  alert(JSON.stringify(data, null, 2));
-                }}
-              >
-                <FormControl required>
-                  <FormLabel>Email</FormLabel>
-                  <Input type="email" name="email" />
-                </FormControl>
-                <FormControl required>
-                  <FormLabel>Password</FormLabel>
-                  <Input type="password" name="password" />
-                </FormControl>
-                <Stack gap={4} sx={{ mt: 2 }}>
-                  <Box
-                    sx={{
-                      display: 'flex',
-                      justifyContent: 'space-between',
-                      alignItems: 'center',
-                    }}
+            {isSignIn ? (
+              <Box>
+                <Stack gap={4} sx={{ mb: 2 }}>
+                  <Stack gap={1}>
+                    <Typography component="h1" level="h3">
+                      Sign in
+                    </Typography>
+                    <Typography level="body-sm">
+                      New to Video Meet?{' '}
+                      <Link href="#replace-with-a-link" level="title-sm" onClick={toggleForm}>
+                        Sign up!
+                      </Link>
+                    </Typography>
+                  </Stack>
+                  <Button
+                    variant="soft"
+                    color="neutral"
+                    fullWidth
+                    startDecorator={<GoogleIcon />}
                   >
-                    <Checkbox size="sm" label="Remember me" name="persistent" />
-                    <Link level="title-sm" href="#replace-with-a-link">
-                      Forgot your password?
-                    </Link>
-                  </Box>
-                  <Button type="submit" fullWidth>
-                    Sign in
+                    Continue with Google
                   </Button>
                 </Stack>
-              </form>
-            </Stack>
+                <Divider
+                  sx={(theme) => ({
+                    [theme.getColorSchemeSelector('light')]: {
+                      color: { xs: '#FFF', md: 'text.tertiary' },
+                    },
+                  })}
+                >
+                  or
+                </Divider>
+                <Stack gap={4} sx={{ mt: 2 }}>
+                  <form onSubmit={handleSubmit}>
+                    <FormControl required>
+                      <FormLabel>Email</FormLabel>
+                      <Input type="email" name="email" />
+                    </FormControl>
+                    <FormControl required>
+                      <FormLabel>Password</FormLabel>
+                      <Input type="password" name="password" />
+                    </FormControl>
+                    <Stack gap={4} sx={{ mt: 2 }}>
+                      <Box
+                        sx={{
+                          display: 'flex',
+                          justifyContent: 'space-between',
+                          alignItems: 'center',
+                        }}
+                      >
+                        <Checkbox size="sm" label="Remember me" name="persistent" />
+                        <Link level="title-sm" href="#replace-with-a-link">
+                          Forgot your password?
+                        </Link>
+                      </Box>
+                      <Button type="submit" fullWidth>
+                        Sign in
+                      </Button>
+                    </Stack>
+                  </form>
+                </Stack>
+              </Box>
+            ) : (
+              <Box>
+                <Stack gap={4} sx={{ mb: 2 }}>
+                  <Stack gap={1}>
+                    <Typography component="h1" level="h3">
+                      Sign up
+                    </Typography>
+                    <Typography level="body-sm">
+                      Already have an account?{' '}
+                      <Link href="#replace-with-a-link" level="title-sm" onClick={toggleForm}>
+                        Sign in!
+                      </Link>
+                    </Typography>
+                  </Stack>
+                  <Button
+                    variant="soft"
+                    color="neutral"
+                    fullWidth
+                    startDecorator={<GoogleIcon />}
+                  >
+                    Continue with Google
+                  </Button>
+                </Stack>
+                <Divider
+                  sx={(theme) => ({
+                    [theme.getColorSchemeSelector('light')]: {
+                      color: { xs: '#FFF', md: 'text.tertiary' },
+                    },
+                  })}
+                >
+                  or
+                </Divider>
+                <Stack gap={4} sx={{ mt: 2 }}>
+                  <form onSubmit={handleSubmit}>
+                    <FormControl required>
+                      <FormLabel>Email</FormLabel>
+                      <Input type="email" name="email" />
+                    </FormControl>
+                    <FormControl required>
+                      <FormLabel>Password</FormLabel>
+                      <Input type="password" name="password" />
+                    </FormControl>
+                    <FormControl required>
+                      <FormLabel>Confirm Password</FormLabel>
+                      <Input type="password" name="confirmPassword" />
+                      {/* {!passwordMatch && <Typography color="error">Passwords do not match</Typography>} */}
+                    </FormControl>
+                    <FormControl required>
+                      <Checkbox size="sm" label="I agree to the terms and conditions" name="termsAgreement" />
+                    </FormControl>
+                    <Button type="submit" fullWidth>
+                      Sign up
+                    </Button>
+                  </form>
+                </Stack>
+              </Box>
+            )}
           </Box>
+          <GetSnackbar
+            open={openSnackbar}
+            handleClose={handleSnackbarClose}
+            message={snackbarMessage}
+          />
           <Box component="footer" sx={{ py: 3 }}>
             <Typography level="body-xs" textAlign="center">
-              © Your company {new Date().getFullYear()}
+              © Video Meet {new Date().getFullYear()}
             </Typography>
           </Box>
         </Box>
