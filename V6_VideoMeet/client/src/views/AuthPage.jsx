@@ -16,7 +16,6 @@ import Link from '@mui/joy/Link';
 import DarkModeRoundedIcon from '@mui/icons-material/DarkModeRounded';
 import LightModeRoundedIcon from '@mui/icons-material/LightModeRounded';
 import BadgeRoundedIcon from '@mui/icons-material/BadgeRounded';
-import GoogleIcon from '../Components/Video Meet/getGoogleIcon';
 import GetSnackbar from '../Components/Common/getSnackbar';
 import axios from 'axios';
 
@@ -69,6 +68,8 @@ export default function JoySignInSignUpTemplate() {
 
       if (password === confirmPassword) {
         const data = {
+          firstName: formElements.firstName.value? formElements.firstName.value : null,
+          lastName: formElements.lastName.value ? formElements.lastName.value : null,
           email: formElements.email.value,
           password: password
         };
@@ -85,7 +86,7 @@ export default function JoySignInSignUpTemplate() {
         setSnackbarMessage("Password & Confirm Password do not match");
         setOpenSnackbar(true);
       }
- 
+
     } else {
       const data = {
         email: formElements.email.value,
@@ -192,14 +193,6 @@ export default function JoySignInSignUpTemplate() {
                       </Link>
                     </Typography>
                   </Stack>
-                  <Button
-                    variant="soft"
-                    color="neutral"
-                    fullWidth
-                    startDecorator={<GoogleIcon />}
-                  >
-                    Continue with Google
-                  </Button>
                 </Stack>
                 <Divider
                   sx={(theme) => ({
@@ -221,18 +214,6 @@ export default function JoySignInSignUpTemplate() {
                       <Input type="password" name="password" />
                     </FormControl>
                     <Stack gap={4} sx={{ mt: 2 }}>
-                      <Box
-                        sx={{
-                          display: 'flex',
-                          justifyContent: 'space-between',
-                          alignItems: 'center',
-                        }}
-                      >
-                        <Checkbox size="sm" label="Remember me" name="persistent" />
-                        <Link level="title-sm" href="#replace-with-a-link">
-                          Forgot your password?
-                        </Link>
-                      </Box>
                       <Button type="submit" fullWidth>
                         Sign in
                       </Button>
@@ -254,14 +235,7 @@ export default function JoySignInSignUpTemplate() {
                       </Link>
                     </Typography>
                   </Stack>
-                  <Button
-                    variant="soft"
-                    color="neutral"
-                    fullWidth
-                    startDecorator={<GoogleIcon />}
-                  >
-                    Continue with Google
-                  </Button>
+
                 </Stack>
                 <Divider
                   sx={(theme) => ({
@@ -275,7 +249,15 @@ export default function JoySignInSignUpTemplate() {
                 <Stack gap={4} sx={{ mt: 2 }}>
                   <form onSubmit={handleSubmit}>
                     <FormControl required>
-                      <FormLabel>Email</FormLabel>
+                      <FormLabel>First Name</FormLabel>
+                      <Input type="text" name="firstName" />
+                    </FormControl>
+                    <FormControl required>
+                      <FormLabel>Last Name</FormLabel>
+                      <Input type="text" name="lastName" />
+                    </FormControl>
+                    <FormControl required>
+                      <FormLabel>Email </FormLabel>
                       <Input type="email" name="email" />
                     </FormControl>
                     <FormControl required>
@@ -285,10 +267,6 @@ export default function JoySignInSignUpTemplate() {
                     <FormControl required>
                       <FormLabel>Confirm Password</FormLabel>
                       <Input type="password" name="confirmPassword" />
-                      {/* {!passwordMatch && <Typography color="error">Passwords do not match</Typography>} */}
-                    </FormControl>
-                    <FormControl required>
-                      <Checkbox size="sm" label="I agree to the terms and conditions" name="termsAgreement" />
                     </FormControl>
                     <Button type="submit" fullWidth>
                       Sign up

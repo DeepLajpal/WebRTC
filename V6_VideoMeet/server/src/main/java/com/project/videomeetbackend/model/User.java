@@ -32,7 +32,7 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     
-    // @NotNull(message = "Name cannot be null")
+    @NotNull(message = "Name cannot be null")
     @Column(name = "first_name")
     private String firstName;
     
@@ -54,7 +54,5 @@ public class User {
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     Set<Participant> participants;
-
-
 
 }

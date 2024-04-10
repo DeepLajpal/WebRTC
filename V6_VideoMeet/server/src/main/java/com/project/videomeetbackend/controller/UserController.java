@@ -34,9 +34,11 @@ public class UserController {
     @PostMapping("/register")
     public ResponseEntity<Map<String, Object>> registerUser(@Valid @RequestBody RegistrationRequest request) {
         try {
+            String firstName = request.firstName;
+            String lastName = request.lastName;
             String email = request.getEmail();
             String password = request.getPassword();
-
+            
             // Check if user with the provided email already exists
             if (userRepository.existsByEmail(email)) {
                 return ResponseEntity.status(HttpStatus.CONFLICT)
@@ -47,6 +49,8 @@ public class UserController {
             User newUser = new User();
             newUser.setEmail(email);
             newUser.setPassword(password); // Ideally, should hash the password
+            newUser.setFirstName(firstName);
+            newUser.setLastName(lastName);
             User savedUser = userRepository.save(newUser);
 
             return ResponseEntity.status(HttpStatus.CREATED)
@@ -96,12 +100,36 @@ public class UserController {
     }
 
     static class RegistrationRequest {
+        @NotBlank(message = "First Name is required")
+        private String firstName;
+
+        private String lastName;
+
         @NotBlank(message = "Email is required")
         private String email;
 
         @NotBlank(message = "Password is required")
         private String password;
 
+        //For firstName
+        public String getFirstName() {
+            return firstName;
+        }
+
+        public void setFirstName(String firstName) {
+            this.firstName = firstName;
+        }
+
+        //For lastName
+        public String getLastName() {
+            return lastName;
+        }
+
+        public void setLastName(String lastName) {
+            this.lastName = lastName;
+        }
+
+        //For email
         public String getEmail() {
             return email;
         }
@@ -110,6 +138,7 @@ public class UserController {
             this.email = email;
         }
 
+        //For password
         public String getPassword() {
             return password;
         }
