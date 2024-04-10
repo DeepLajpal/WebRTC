@@ -18,6 +18,8 @@ import LightModeRoundedIcon from '@mui/icons-material/LightModeRounded';
 import BadgeRoundedIcon from '@mui/icons-material/BadgeRounded';
 import GoogleIcon from '../Components/Video Meet/getGoogleIcon';
 import GetSnackbar from '../Components/Common/getSnackbar';
+import axios from 'axios';
+
 
 function ColorSchemeToggle(props) {
   const { onClick, ...other } = props;
@@ -57,36 +59,47 @@ export default function JoySignInSignUpTemplate() {
   };
 
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
     const formElements = event.currentTarget.elements;
     const password = formElements.password.value;
-    if(formElements.confirmPassword){
+    if (formElements.confirmPassword) {
 
       const confirmPassword = formElements.confirmPassword.value;
-  
+
       if (password === confirmPassword) {
         const data = {
           email: formElements.email.value,
-          password: password,
-          confirmPassword: confirmPassword,
-          termsAgreement: formElements.termsAgreement.checked,
+          password: password
         };
-        setSnackbarMessage(JSON.stringify(data, null, 2));
-        setOpenSnackbar(true);
+        try {
+          const response = await axios.post('http://localhost:8080/api/register', data)
+          setSnackbarMessage(response.data.message);
+          setOpenSnackbar(true);
+          setIsSignIn(true)
+        } catch (err) {
+          setSnackbarMessage(err.response.data.message);
+          setOpenSnackbar(true);
+        }
       } else {
-        setSnackbarMessage("Passwords do not match");
+        setSnackbarMessage("Password & Confirm Password do not match");
         setOpenSnackbar(true);
       }
 
-    }else{
+    } else {
       const data = {
         email: formElements.email.value,
         password: password,
-        persistence: formElements.persistent.checked,
       };
-      setSnackbarMessage(JSON.stringify(data, null, 2));
-      setOpenSnackbar(true);
+
+      try {
+        const response = await axios.post('http://localhost:8080/api/login', data)
+        setSnackbarMessage(response.data.message);
+        setOpenSnackbar(true);
+      } catch (err) {
+        setSnackbarMessage(err.response.data.message);
+        setOpenSnackbar(true);
+      }
     }
   };
 

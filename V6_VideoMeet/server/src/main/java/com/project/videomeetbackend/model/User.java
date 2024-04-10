@@ -12,6 +12,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
@@ -31,18 +32,20 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     
-    @NotNull(message = "Name cannot be null")
+    // @NotNull(message = "Name cannot be null")
     @Column(name = "first_name")
     private String firstName;
     
     @Column(name = "last_name")
     private String lastName;
     
+    @NotNull(message = "Email cannot be null")
     @Column(unique = true) @Email(message = "Email should be valid")
     private String email;
     
     @NotNull(message = "Password cannot be null")
     @Size(min = 8, message = "Password should be at least 8 characters long")
+    @Column(name = "password")
     private String password;
     
     @CreationTimestamp
@@ -51,5 +54,7 @@ public class User {
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     Set<Participant> participants;
+
+
 
 }
