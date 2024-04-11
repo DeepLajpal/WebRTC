@@ -1,7 +1,4 @@
-import React, {useState} from 'react';
-
 import styled from 'styled-components';
-import { useGlobalState } from '../../ContextAPI/GlobalStateContext';
 
 import MultiUsersCard from './getMultiUsersCard';
 import DualVideoCards from './getDualVideoCards';
@@ -9,11 +6,10 @@ import DualVideoCards from './getDualVideoCards';
 
 const GetVideoContainers = ({localName, localMeetingId, existingUsersData }) => {
 
-    const { globalState } = useGlobalState();
 
     const handleVideoContainers = () => {
 
-        switch (globalState.existingUsers) {
+        switch (1) {
             case 1:
                 return <DualVideoCards small={false} />
             case 2:

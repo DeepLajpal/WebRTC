@@ -19,7 +19,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.project.videomeetbackend.dto.MeetingCreationResponseDTO;
+import com.project.videomeetbackend.model.Meeting;
+import com.project.videomeetbackend.model.Participant;
 import com.project.videomeetbackend.model.User;
+import com.project.videomeetbackend.repository.MeetingRepository;
+import com.project.videomeetbackend.repository.ParticipantRepository;
 import com.project.videomeetbackend.repository.UserRepository;
 
 @RestController
@@ -30,6 +35,12 @@ public class UserController {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private MeetingRepository meetingRepository;
+
+    @Autowired
+    private ParticipantRepository participantRepository;
 
     @PostMapping("/register")
     public ResponseEntity<Map<String, Object>> registerUser(@Valid @RequestBody RegistrationRequest request) {
@@ -62,6 +73,43 @@ public class UserController {
         }
     }
 
+    @PostMapping("/createMeeting")
+    public ResponseEntity<?> createMeeting(@RequestBody CreateMeetingRequest request) {
+        try {
+            // Retrieve the user by userId
+            User user = userRepository.findById(request.getUserId()).orElse(null);
+            if (user == null) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body(buildErrorResponse("User not found with id: " + request.getUserId()));
+            }
+    
+            // Create a new meeting
+            Meeting meeting = new Meeting();
+    
+            // Add the user as a participant
+            Participant participant = new Participant();
+            participant.setUser(user);
+            participant.setMeeting(meeting);
+    
+            // Save the meeting and participant
+            meetingRepository.save(meeting);
+            participantRepository.save(participant);
+    
+            MeetingCreationResponseDTO response = new MeetingCreationResponseDTO();
+            response.setMeeting(meeting);
+            response.setParticipant(participant);
+
+            return ResponseEntity.status(HttpStatus.CREATED)
+                    .body(buildSuccessResponse("Meeting created successfully", response));
+        } catch (NumberFormatException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(buildErrorResponse("Invalid userId format"));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(buildErrorResponse("An error occurred: " + e.getMessage()));
+        }
+    }
+
     @PostMapping("/login")
     public ResponseEntity<Map<String, Object>> loginUser(@Valid @RequestBody LoginRequest request) {
         try {
@@ -84,7 +132,7 @@ public class UserController {
         }
     }
 
-    private Map<String, Object> buildSuccessResponse(String message, User data) {
+    private Map<String, Object> buildSuccessResponse(String message, Object data) {
         Map<String, Object> responseBody = new HashMap<>();
         responseBody.put("status", "success");
         responseBody.put("data", data);
@@ -171,4 +219,18 @@ public class UserController {
             this.password = password;
         }
     }
+    static class CreateMeetingRequest{
+        
+        @NotBlank(message = "userId is required")
+        private Integer userId;
+
+        public Integer getUserId() {
+            return userId;
+        }
+        public void setUserId(Integer userId) {
+            this.userId = userId;
+        }
+    
+    }
 }
+

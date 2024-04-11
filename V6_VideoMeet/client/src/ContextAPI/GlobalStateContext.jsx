@@ -11,12 +11,8 @@ export const GlobalStateProvider = ({ children }) => {
     viewPeople: true,
     name: null,
     meetingId: null,
-    profileImg: false,
-    existingUsers:1,
-    tabValue:0,
+    loggedInUserData: {}
   });
-
-
 
   const updateGlobalState = (newState) => {
     setGlobalState((prevState) => ({

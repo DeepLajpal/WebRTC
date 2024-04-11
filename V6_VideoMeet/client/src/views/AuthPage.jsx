@@ -6,7 +6,6 @@ import Box from '@mui/joy/Box';
 import Button from '@mui/joy/Button';
 import Divider from '@mui/joy/Divider';
 import Typography from '@mui/joy/Typography';
-import Checkbox from '@mui/joy/Checkbox';
 import FormControl from '@mui/joy/FormControl';
 import FormLabel from '@mui/joy/FormLabel';
 import Input from '@mui/joy/Input';
@@ -18,6 +17,9 @@ import LightModeRoundedIcon from '@mui/icons-material/LightModeRounded';
 import BadgeRoundedIcon from '@mui/icons-material/BadgeRounded';
 import GetSnackbar from '../Components/Common/getSnackbar';
 import axios from 'axios';
+import { useGlobalState } from '../ContextAPI/GlobalStateContext';
+import {useNavigate} from 'react-router-dom';
+import { useEffect } from 'react';
 
 
 function ColorSchemeToggle(props) {
@@ -45,9 +47,13 @@ function ColorSchemeToggle(props) {
 }
 
 export default function JoySignInSignUpTemplate() {
+  const {updateGlobalState} = useGlobalState();
+
   const [isSignIn, setIsSignIn] = React.useState(true);
   const [openSnackbar, setOpenSnackbar] = React.useState(false);
   const [snackbarMessage, setSnackbarMessage] = React.useState('');
+
+  const navigate = useNavigate();
 
   const toggleForm = () => {
     setIsSignIn(!isSignIn);
@@ -55,6 +61,12 @@ export default function JoySignInSignUpTemplate() {
 
   const handleSnackbarClose = () => {
     setOpenSnackbar(false);
+  };
+
+  const handleNavigation = (path, loggedInUserData) => {
+    updateGlobalState({loggedInUserData: {...loggedInUserData} });
+
+    navigate(path);
   };
 
 
@@ -97,6 +109,7 @@ export default function JoySignInSignUpTemplate() {
         const response = await axios.post('http://localhost:8080/api/login', data)
         setSnackbarMessage(response.data.message);
         setOpenSnackbar(true);
+        handleNavigation('/home', response.data.data )
       } catch (err) {
         setSnackbarMessage(err.response.data.message);
         setOpenSnackbar(true);
@@ -188,7 +201,7 @@ export default function JoySignInSignUpTemplate() {
                     </Typography>
                     <Typography level="body-sm">
                       New to Video Meet?{' '}
-                      <Link href="#replace-with-a-link" level="title-sm" onClick={toggleForm}>
+                      <Link href="#" level="title-sm" onClick={toggleForm}>
                         Sign up!
                       </Link>
                     </Typography>
@@ -230,7 +243,7 @@ export default function JoySignInSignUpTemplate() {
                     </Typography>
                     <Typography level="body-sm">
                       Already have an account?{' '}
-                      <Link href="#replace-with-a-link" level="title-sm" onClick={toggleForm}>
+                      <Link href="#" level="title-sm" onClick={toggleForm}>
                         Sign in!
                       </Link>
                     </Typography>
