@@ -4,13 +4,14 @@ import KeyboardIcon from '@mui/icons-material/Keyboard';
 import { Button } from '@mui/material';
 import VideocamIcon from '@mui/icons-material/Videocam';
 import { useGlobalState } from '../../ContextAPI/GlobalStateContext';
-
+import axios from 'axios';
+import {useNavigate} from 'react-router-dom';
 const GetMeetingInfo = ({ handleTabChange }) => {
-
+  const navigate = useNavigate();
   const [inputValue, setInputValue] = useState('');
 
   const meetingIdInput = useRef(null);
-  const { updateGlobalState } = useGlobalState()
+  const { globalState, updateGlobalState } = useGlobalState()
 
   const handleChange = (event) => {
     const value = event.target.value;
@@ -18,20 +19,32 @@ const GetMeetingInfo = ({ handleTabChange }) => {
       setInputValue(value);
     }
   };
-  const handleNewMeeting = (e) => {
-    var meetingId = Math.floor(Math.random() * 100000000).toString().padEnd(8, '0');
-    handleTabChange(1);
+
+  const handleNavigation = (meetingId, participantId) => {
     updateGlobalState({ meetingId: meetingId });
     console.log('meetingId: ', meetingId);
+    navigate(`/meeting/${meetingId}/${participantId}`);
+  }
+  const handleNewMeeting = async () => {
+    // var meetingId = Math.floor(Math.random() * 100000000).toString().padEnd(8, '0');
+    // handleTabChange(1);
+    try {
+      const response = await axios.post('http://localhost:8080/api/createMeeting', { userId: globalState.userId });
+      handleNavigation(response.data.data.meeting.shareableMeetingId, response.data.data.participant.participantId);
+    }catch(e){
+      console.log(e);
+    }
   }
 
   const handleJoin = (event) => {
     const inputValue = meetingIdInput.current.value;
 
     if (inputValue.length === 8) {
-      handleTabChange(1);
-      updateGlobalState({ meetingId: inputValue });
-      console.log('meetingId: ', inputValue);
+      // handleTabChange(1);
+      // updateGlobalState({ meetingId: inputValue });
+      // console.log('meetingId: ', inputValue);
+      handleNavigation(inputValue);
+
     }
     else if (inputValue.length === 0) {
       alert("Please Enter a Valid Meeting Id")

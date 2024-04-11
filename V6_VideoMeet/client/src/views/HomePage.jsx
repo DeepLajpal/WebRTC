@@ -21,14 +21,16 @@ const Home = () => {
       <div className='startDiv' onClick={()=>handleTabChange(0)}>
         <ShowNav logoName={"Video Meet"} />
       </div>
-      <div className='middleDiv'>
+      {/* <div className='middleDiv'>
         <IconTabs handleTabChange={handleTabChange} tabValue={tabValue} />
-      </div>
+      </div> */}
       <div className='endDiv'>
         {
-          !tabValue
-            ? <GetMeetingInfo handleTabChange={handleTabChange} />
-            : <GetUserInfo handleTabChange={handleTabChange} />
+          // !tabValue
+            // ? <GetMeetingInfo handleTabChange={handleTabChange} />
+            // : <GetUserInfo handleTabChange={handleTabChange} />
+             <GetMeetingInfo handleTabChange={handleTabChange} />
+
         }
       </div>
     </Wrapper>
@@ -41,7 +43,7 @@ export default Home
 const Wrapper = styled.div`
 
 display:grid;
-grid-template-rows: max-content 20% 1fr;
+grid-template-rows: max-content 1fr;
 height:100%;
 width:100%;
 

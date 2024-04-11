@@ -7,4 +7,5 @@ import com.project.videomeetbackend.model.Meeting;
 // This will be AUTO IMPLEMENTED by Spring into a Bean called userRepository
 
 public interface MeetingRepository extends JpaRepository<Meeting, Integer> {
+    Meeting findByShareableMeetingId(Integer shareableMeetingId);
 }

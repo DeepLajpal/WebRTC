@@ -18,7 +18,7 @@ import BadgeRoundedIcon from '@mui/icons-material/BadgeRounded';
 import GetSnackbar from '../Components/Common/getSnackbar';
 import axios from 'axios';
 import { useGlobalState } from '../ContextAPI/GlobalStateContext';
-import {useNavigate} from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useEffect } from 'react';
 
 
@@ -47,7 +47,7 @@ function ColorSchemeToggle(props) {
 }
 
 export default function JoySignInSignUpTemplate() {
-  const {updateGlobalState} = useGlobalState();
+  const { updateGlobalState } = useGlobalState();
 
   const [isSignIn, setIsSignIn] = React.useState(true);
   const [openSnackbar, setOpenSnackbar] = React.useState(false);
@@ -64,7 +64,9 @@ export default function JoySignInSignUpTemplate() {
   };
 
   const handleNavigation = (path, loggedInUserData) => {
-    updateGlobalState({loggedInUserData: {...loggedInUserData} });
+    const data = { loggedInUserData: {...loggedInUserData}, name: loggedInUserData.firstName + ' ' + loggedInUserData.lastName, userId: loggedInUserData.id}
+
+    updateGlobalState({ ...data });
 
     navigate(path);
   };
@@ -80,7 +82,7 @@ export default function JoySignInSignUpTemplate() {
 
       if (password === confirmPassword) {
         const data = {
-          firstName: formElements.firstName.value? formElements.firstName.value : null,
+          firstName: formElements.firstName.value ? formElements.firstName.value : null,
           lastName: formElements.lastName.value ? formElements.lastName.value : null,
           email: formElements.email.value,
           password: password
@@ -109,7 +111,7 @@ export default function JoySignInSignUpTemplate() {
         const response = await axios.post('http://localhost:8080/api/login', data)
         setSnackbarMessage(response.data.message);
         setOpenSnackbar(true);
-        handleNavigation('/home', response.data.data )
+        handleNavigation('/home', response.data.data)
       } catch (err) {
         setSnackbarMessage(err.response.data.message);
         setOpenSnackbar(true);

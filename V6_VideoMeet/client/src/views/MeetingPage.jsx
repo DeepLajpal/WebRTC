@@ -2,13 +2,15 @@ import React, { useEffect, useRef, useState } from 'react';
 import Footer from '../Components/Video Meet/getFooter.jsx';
 import styled from 'styled-components';
 import initSocket from '../utility/socketConnection.jsx';
-import { useGlobalState } from '../ContextAPI/GlobalStateContext';
+import { useGlobalState } from '../ContextAPI/GlobalStateContext.jsx';
 import LocalUsersCard from '../Components/Video Meet/getLocalUsersCard.jsx';
 import InitializeSocket from '../utility/getInitializeSocket.jsx';
 import GetLocalUserMedia from '../Components/Video Meet/getLocalUserDevice.jsx';
+import {useParams} from 'react-router-dom';
 
+const MeetingPage = () => {
+  const { meetingId } = useParams(); // Get the meetingId from URL params
 
-const Stream = () => {
   // const [usersConnection, setUsersConnection]  = useState([]); // Array to store user connections
   // var remoteVideoStream = []; // Array to store remote video streams
   // const [mediaStream, setMediaStream] = useState(null);
@@ -30,13 +32,13 @@ const Stream = () => {
         setMediaStream={setMediaStream}
       /> */}
       {/* <GetLocalUserMedia mediaStream={mediaStream} setMediaStream = {setMediaStream}/> */}
-      <InitializeSocket/>
-      {/* <Footer localMeetingId={globalState.meetingId} /> */}
+      {/* <InitializeSocket/> */}
+      <Footer localMeetingId={meetingId} />
     </Wrapper>
   );
 }
 
-export default Stream;
+export default MeetingPage;
 
 const Wrapper = styled.div`
 height:100%;

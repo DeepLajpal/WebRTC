@@ -6,7 +6,7 @@ import {
   RouterProvider,
 } from "react-router-dom";
 import HomePage from './views/HomePage.jsx';
-import StreamPage from './views/StreamPage.jsx';
+import MeetingPage from './views/MeetingPage.jsx';
 import ErrorPage from './views/ErrorPage.jsx';
 import { GlobalStateProvider } from './ContextAPI/GlobalStateContext.jsx';
 import AuthPage from './views/AuthPage.jsx';
@@ -18,16 +18,16 @@ const router = createBrowserRouter([
     errorElement: <ErrorPage />,
   },
   {
-    path: "Home/",
+    path: "home/",
     element: <HomePage />,
   },
   {
-    path: "Auth/",
+    path: "auth/",
     element: <AuthPage />,
   },
   {
-    path: "Stream/",
-    element: <StreamPage />,
+    path: "meeting/:meetingId/:participantId",
+    element: <MeetingPage />,
   },
 ]);
 

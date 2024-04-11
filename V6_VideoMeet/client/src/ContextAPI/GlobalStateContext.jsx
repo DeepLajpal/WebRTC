@@ -9,8 +9,10 @@ export const GlobalStateProvider = ({ children }) => {
     Mic: true,
     Video: true,
     viewPeople: true,
+    userId:null,
     name: null,
     meetingId: null,
+    participantId:null,
     loggedInUserData: {}
   });
 

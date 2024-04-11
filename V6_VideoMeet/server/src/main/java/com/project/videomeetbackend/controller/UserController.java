@@ -73,6 +73,28 @@ public class UserController {
         }
     }
 
+    @PostMapping("/login")
+    public ResponseEntity<Map<String, Object>> loginUser(@Valid @RequestBody LoginRequest request) {
+        try {
+            String email = request.getEmail();
+            String password = request.getPassword();
+
+            // Find user by email
+            User user = userRepository.findByEmail(email);
+
+            if (user == null || !Objects.equals(password, user.getPassword())) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                        .body(buildErrorResponse("Invalid email or password"));
+            }
+
+            return ResponseEntity.ok(buildSuccessResponse("Logged in successfully", user));
+        } catch (Exception e) {
+            // Handle other exceptions
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(buildErrorResponse("An error occurred: " + e.getMessage()));
+        }
+    }
+
     @PostMapping("/createMeeting")
     public ResponseEntity<?> createMeeting(@RequestBody CreateMeetingRequest request) {
         try {
@@ -110,28 +132,40 @@ public class UserController {
         }
     }
 
-    @PostMapping("/login")
-    public ResponseEntity<Map<String, Object>> loginUser(@Valid @RequestBody LoginRequest request) {
+    @PostMapping("/joinMeeting")
+    public ResponseEntity<?> joinMeeting(@RequestBody JoinMeetingRequest request) {
         try {
-            String email = request.getEmail();
-            String password = request.getPassword();
-
-            // Find user by email
-            User user = userRepository.findByEmail(email);
-
-            if (user == null || !Objects.equals(password, user.getPassword())) {
-                return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                        .body(buildErrorResponse("Invalid email or password"));
+            // Retrieve the meeting by shareableMeetingId
+            Meeting meeting = meetingRepository.findByShareableMeetingId(request.getShareableMeetingId());
+            if (meeting == null) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body(buildErrorResponse("Meeting not found with shareableMeetingId: " + request.getShareableMeetingId()));
             }
 
-            return ResponseEntity.ok(buildSuccessResponse("Logged in successfully", user));
+            // Assuming you have user authentication, retrieve the user information
+            User user = userRepository.findById(request.getUserId()).orElse(null);
+            if (user == null) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body(buildErrorResponse("User not found with id: " + request.getUserId()));
+            }
+
+            // Create a new participant
+            Participant participant = new Participant();
+            participant.setUser(user);
+            participant.setMeeting(meeting);
+
+            // Save the participant
+            participantRepository.save(participant);
+
+            return ResponseEntity.status(HttpStatus.CREATED)
+                    .body(buildSuccessResponse("Joined meeting successfully", participant));
         } catch (Exception e) {
-            // Handle other exceptions
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(buildErrorResponse("An error occurred: " + e.getMessage()));
         }
     }
 
+    
     private Map<String, Object> buildSuccessResponse(String message, Object data) {
         Map<String, Object> responseBody = new HashMap<>();
         responseBody.put("status", "success");
@@ -232,5 +266,28 @@ public class UserController {
         }
     
     }
+    // Class for the request body of joinMeeting endpoint
+    static class JoinMeetingRequest {
+        private Integer userId;
+        private Integer shareableMeetingId;
+    
+        public Integer getUserId() {
+            return userId;
+        }
+    
+        public void setUserId(Integer userId) {
+            this.userId = userId;
+        }
+    
+        public Integer getShareableMeetingId() {
+            return shareableMeetingId;
+        }
+    
+        public void setShareableMeetingId(Integer shareableMeetingId) {
+            this.shareableMeetingId = shareableMeetingId;
+        }
+    }
 }
+
+
 
