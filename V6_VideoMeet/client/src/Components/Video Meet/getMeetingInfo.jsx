@@ -36,14 +36,17 @@ const GetMeetingInfo = ({ handleTabChange }) => {
     }
   }
 
-  const handleJoin = (event) => {
+  const handleJoin = async (event) => {
     const inputValue = meetingIdInput.current.value;
 
     if (inputValue.length === 8) {
-      // handleTabChange(1);
-      // updateGlobalState({ meetingId: inputValue });
-      // console.log('meetingId: ', inputValue);
-      handleNavigation(inputValue);
+
+      try {
+        const response = await axios.post('http://localhost:8080/api/joinMeeting', { userId: globalState.userId, shareableMeetingId: inputValue});
+        handleNavigation(inputValue, response.data.data.participantId);
+      }catch(e){
+        console.log(e);
+      }
 
     }
     else if (inputValue.length === 0) {
