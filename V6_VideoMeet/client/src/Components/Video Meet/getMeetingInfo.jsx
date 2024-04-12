@@ -1,12 +1,12 @@
-import React, { useState, useRef } from 'react'
+import { useState, useRef } from 'react'
 import styled from 'styled-components';
 import KeyboardIcon from '@mui/icons-material/Keyboard';
 import { Button } from '@mui/material';
 import VideocamIcon from '@mui/icons-material/Videocam';
 import { useGlobalState } from '../../ContextAPI/GlobalStateContext';
 import axios from 'axios';
-import {useNavigate} from 'react-router-dom';
-const GetMeetingInfo = ({ handleTabChange }) => {
+import { useNavigate } from 'react-router-dom';
+const GetMeetingInfo = () => {
   const navigate = useNavigate();
   const [inputValue, setInputValue] = useState('');
 
@@ -26,35 +26,48 @@ const GetMeetingInfo = ({ handleTabChange }) => {
     navigate(`/meeting/${meetingId}/${participantId}`);
   }
   const handleNewMeeting = async () => {
-    // var meetingId = Math.floor(Math.random() * 100000000).toString().padEnd(8, '0');
-    // handleTabChange(1);
-    try {
-      const response = await axios.post('http://localhost:8080/api/createMeeting', { userId: globalState.userId });
-      handleNavigation(response.data.data.meeting.shareableMeetingId, response.data.data.participant.participantId);
-    }catch(e){
-      console.log(e);
-    }
-  }
-
-  const handleJoin = async (event) => {
-    const inputValue = meetingIdInput.current.value;
-
-    if (inputValue.length === 8) {
+    if (globalState.userId) {
 
       try {
-        const response = await axios.post('http://localhost:8080/api/joinMeeting', { userId: globalState.userId, shareableMeetingId: inputValue});
-        handleNavigation(inputValue, response.data.data.participantId);
-      }catch(e){
+        const response = await axios.post('http://localhost:8080/api/createMeeting', { userId: globalState.userId });
+        handleNavigation(response.data.data.meeting.shareableMeetingId, response.data.data.participant.participantId);
+      } catch (e) {
         console.log(e);
       }
+    } else {
+      alert("Please Login to create New Meeting")
+      navigate('/auth');
+    }
 
+  }
+
+  const handleJoin = async () => {
+    const inputValue = meetingIdInput.current.value;
+
+    if (globalState.userId) {
+      
+      if (inputValue.length === 8) {
+
+        try {
+          const response = await axios.post('http://localhost:8080/api/joinMeeting', { userId: globalState.userId, shareableMeetingId: inputValue });
+          handleNavigation(inputValue, response.data.data.participantId);
+        } catch (e) {
+          console.log(e);
+        }
+
+      }
+      else if (inputValue.length === 0) {
+        alert("Please Enter a Valid Meeting Id")
+      }
+      else {
+        alert("Meeting Id Should be 8 Digits")
+      }
+
+    } else {
+      alert("Please Login to create New Meeting")
+      navigate('/auth');
     }
-    else if (inputValue.length === 0) {
-      alert("Please Enter a Valid Meeting Id")
-    }
-    else {
-      alert("Meeting Id Should be 8 Digits")
-    }
+
   }
 
   const handleKeyDown = (event) => {
@@ -109,7 +122,7 @@ const Wrapper = styled.div`
 
 
   width:100%;
-  height: 80%;
+  height: 100%;
   // border: 2px solid red;
   display:grid;
   place-items:center;

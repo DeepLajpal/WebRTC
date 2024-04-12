@@ -1,9 +1,5 @@
 package com.project.videomeetbackend.config;
 
-
-import com.project.videomeetbackend.chat.ChatMessage;
-import com.project.videomeetbackend.chat.MessageType;
-
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;
@@ -13,6 +9,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 
 import com.project.videomeetbackend.chat.ChatMessage;
+import com.project.videomeetbackend.chat.MessageType;
 
 @Component
 @Slf4j
@@ -26,7 +23,7 @@ public class WebSocketEventListener {
         StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(event.getMessage());
         String username = (String) headerAccessor.getSessionAttributes().get("username");
         if (username != null) {
-            log.info("user disconnected: {}", username);
+            log.info("User disconnected: {}", username);
             var chatMessage = ChatMessage.builder()
                     .type(MessageType.LEAVE)
                     .sender(username)
@@ -34,6 +31,4 @@ public class WebSocketEventListener {
             messagingTemplate.convertAndSend("/topic/public", chatMessage);
         }
     }
-
 }
-

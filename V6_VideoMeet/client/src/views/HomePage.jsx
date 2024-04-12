@@ -21,17 +21,8 @@ const Home = () => {
       <div className='startDiv' onClick={()=>handleTabChange(0)}>
         <ShowNav logoName={"Video Meet"} />
       </div>
-      {/* <div className='middleDiv'>
-        <IconTabs handleTabChange={handleTabChange} tabValue={tabValue} />
-      </div> */}
-      <div className='endDiv'>
-        {
-          // !tabValue
-            // ? <GetMeetingInfo handleTabChange={handleTabChange} />
-            // : <GetUserInfo handleTabChange={handleTabChange} />
-             <GetMeetingInfo handleTabChange={handleTabChange} />
-
-        }
+      <div className='middleDiv'>
+             <GetMeetingInfo handleTabChange={handleTabChange} /> 
       </div>
     </Wrapper>
   );
@@ -47,9 +38,5 @@ grid-template-rows: max-content 1fr;
 height:100%;
 width:100%;
 
-  .middleDiv{
-        justify-self: center;
-        height: fit-content;
-        align-self:end;
-  }
+
 `

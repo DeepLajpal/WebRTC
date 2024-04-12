@@ -1,26 +1,38 @@
-import React, { useEffect, useRef, useState } from 'react';
+
 import Footer from '../Components/Video Meet/getFooter.jsx';
 import styled from 'styled-components';
-import initSocket from '../utility/socketConnection.jsx';
-import { useGlobalState } from '../ContextAPI/GlobalStateContext.jsx';
-import LocalUsersCard from '../Components/Video Meet/getLocalUsersCard.jsx';
-import InitializeSocket from '../utility/getInitializeSocket.jsx';
-import GetLocalUserMedia from '../Components/Video Meet/getLocalUserDevice.jsx';
+// import useSocket from "../utility/useSocket";
 import {useParams} from 'react-router-dom';
+import { useEffect } from 'react';
+import { getStompClient, initializeStompClient } from '../connections/stompClient.jsx';
+// import { useEffect } from 'react';
 
 const MeetingPage = () => {
   const { meetingId } = useParams(); // Get the meetingId from URL params
 
-  // const [usersConnection, setUsersConnection]  = useState([]); // Array to store user connections
-  // var remoteVideoStream = []; // Array to store remote video streams
-  // const [mediaStream, setMediaStream] = useState(null);
+  const onMessageReceived = (payload) => { console.log(payload)};
+  const connectToStompClient = async () => {
+    // If already connected, return early
+    if (getStompClient()?.connected) return;
 
-  // var remoteVideosRef = useRef({});
+    // let username = signupData?.name.trim();
+    // dispatch(setUsername(username));
+      const initializedSocket = await initializeStompClient();
+      getStompClient()?.subscribe("/topic/public", onMessageReceived);
+      // Tell your username to the server
+      getStompClient()?.send(
+        "/app/chat.addUser",
+        {}, // headers
+        JSON.stringify("Deep Lajpal") // body
+      );
+      console.log(initializedSocket, "initialized socket!");
+  };
 
-  // const { globalState } = useGlobalState();
-  // const [existingUsersData, setExistingUsersData] = useState([]);
-
-// useEffect(()=>console.log("mediaStream of stream page"),[mediaStream])
+  useEffect(() => {
+    console.log("connecting to socket!")
+    connectToStompClient();
+    // return disconnectStompClient()
+  }, []);
 
 
   return (
@@ -31,8 +43,6 @@ const MeetingPage = () => {
         playAudio={globalState.Mic}
         setMediaStream={setMediaStream}
       /> */}
-      {/* <GetLocalUserMedia mediaStream={mediaStream} setMediaStream = {setMediaStream}/> */}
-      {/* <InitializeSocket/> */}
       <Footer localMeetingId={meetingId} />
     </Wrapper>
   );

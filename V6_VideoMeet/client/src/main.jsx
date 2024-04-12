@@ -1,3 +1,4 @@
+import 'global';
 import React from 'react'
 import ReactDOM from 'react-dom/client'
 import './index.css'
@@ -10,6 +11,7 @@ import MeetingPage from './views/MeetingPage.jsx';
 import ErrorPage from './views/ErrorPage.jsx';
 import { GlobalStateProvider } from './ContextAPI/GlobalStateContext.jsx';
 import AuthPage from './views/AuthPage.jsx';
+
 
 const router = createBrowserRouter([
   {
