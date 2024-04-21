@@ -11,5 +11,4 @@ public class VideoMeetBackendApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(VideoMeetBackendApplication.class, args);
 	}
-
 }
