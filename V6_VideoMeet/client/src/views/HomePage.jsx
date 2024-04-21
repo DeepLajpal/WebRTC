@@ -2,9 +2,8 @@ import React, { useEffect } from 'react'
 import styled from 'styled-components';
 import ShowNav from '../Components/Video Meet/getNav';
 import GetMeetingInfo from '../Components/Video Meet/getMeetingInfo';
-import IconTabs from '../Components/Common/showTab';
-import GetUserInfo from '../Components/Video Meet/getUserInfo';
 import { useGlobalState } from '../ContextAPI/GlobalStateContext';
+import { initializeStompClient, disconnectStompClient, getStompClient } from '../services/stompClient';
 
 const Home = () => {
 
@@ -16,8 +15,37 @@ const Home = () => {
   };
 
   console.log(globalState.loggedInUserData, 'globalState.loggedInUserData');
+
+  const onMessageReceived = (payload) => {
+    console.log(payload, "payload received");
+  };
+  const connectToStompClient = async () => {
+    // If already connected, return early
+    if (getStompClient()?.connected) return;
+
+    if (globalState.loggedInUserData) {
+      const initializedSocket = await initializeStompClient();
+      getStompClient()?.subscribe("/topic/public", onMessageReceived);
+      // Tell your username to the server
+      getStompClient()?.send(
+        "/app/chat.addUser",
+        {}, // headers
+        JSON.stringify("Rohan") // body
+      );
+      console.log(initializedSocket, "initialized socket!");
+    }
+  };
+
+  useEffect(() => {
+    connectToStompClient()
+    return () => {
+      disconnectStompClient();
+    }
+  }, [globalState.loggedInUserData]);
+
   return (
     <Wrapper>
+      {/* <WebSocketComponent /> */}
       <div className='startDiv' onClick={()=>handleTabChange(0)}>
         <ShowNav logoName={"Video Meet"} />
       </div>
