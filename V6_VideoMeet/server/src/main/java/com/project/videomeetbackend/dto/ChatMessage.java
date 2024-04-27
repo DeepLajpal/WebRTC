@@ -1,4 +1,4 @@
-package com.project.videomeetbackend.chat;
+package com.project.videomeetbackend.dto;
 
 import lombok.*;
 

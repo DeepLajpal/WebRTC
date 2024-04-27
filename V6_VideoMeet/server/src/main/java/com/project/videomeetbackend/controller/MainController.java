@@ -6,7 +6,6 @@ import java.util.Objects;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -31,7 +30,7 @@ import com.project.videomeetbackend.repository.UserRepository;
 @RequestMapping("/api")
 @CrossOrigin(origins = "*")
 @Validated
-public class UserController {
+public class MainController {
 
     @Autowired
     private UserRepository userRepository;

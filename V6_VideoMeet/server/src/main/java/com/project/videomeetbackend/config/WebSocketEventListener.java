@@ -1,9 +1,6 @@
 package com.project.videomeetbackend.config;
 
 
-import com.project.videomeetbackend.chat.ChatMessage;
-import com.project.videomeetbackend.chat.MessageType;
-
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;
@@ -11,6 +8,9 @@ import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.messaging.SessionDisconnectEvent;
+
+import com.project.videomeetbackend.dto.ChatMessage;
+import com.project.videomeetbackend.dto.MessageType;
 
 @Component
 @Slf4j
