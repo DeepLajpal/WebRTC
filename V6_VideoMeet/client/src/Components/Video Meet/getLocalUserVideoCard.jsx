@@ -4,11 +4,13 @@ import CardCover from '@mui/joy/CardCover';
 import styled from 'styled-components';
 import { IoMdMic, IoMdMicOff } from "react-icons/io";
 import Avatar from '@mui/joy/Avatar';
+import { useGlobalState } from '../../ContextAPI/GlobalStateContext';
 
-const LocalUserVideoCard = ({ localName, showVideo, playAudio, setMediaStream }) => {
+const LocalUserVideoCard = ({ localName }) => {
     const localVideoRef = useRef(null);
     const [localMediaStream, setLocalMediaStream] = useState(null);
-
+    const { globalState } = useGlobalState();
+    globalState.Mic
     const initializeMediaStream = async () => {
         try {  
                const stream = await navigator.mediaDevices.getUserMedia({
@@ -20,7 +22,6 @@ const LocalUserVideoCard = ({ localName, showVideo, playAudio, setMediaStream })
                 })
                 
                 localVideoRef.current.srcObject = stream;
-                setMediaStream(stream.getVideoTracks()[0]);
                 setLocalMediaStream(stream);
 
         } catch (err) {
@@ -38,21 +39,20 @@ const LocalUserVideoCard = ({ localName, showVideo, playAudio, setMediaStream })
     }, []);
 
     useEffect(() => {
-        if (!showVideo) {
+        if (!globalState.Video) {
 
             if (localMediaStream) {
                 localMediaStream.getTracks().forEach(track => track.stop());
-                setMediaStream(localMediaStream.getVideoTracks()[0]);
                 setLocalMediaStream(null); // Reset localMediaStream state
             }
         } else {
             initializeMediaStream();
         }
-    }, [showVideo]);
+    }, [globalState.Video]);
 
     const smallVideoStyling = {
-        cardStyling: { minWidth: '234px', width: '234px', minHeight: '132px', height: '132px', background: !showVideo ? '#4A4E51' : 'none' },
-        cardCoverStyling: { display: !showVideo ? 'none' : null },
+        cardStyling: { minWidth: '234px', width: '234px', minHeight: '132px', height: '132px', background: !globalState.Video ? '#4A4E51' : 'none' },
+        cardCoverStyling: { display: !globalState.Video ? 'none' : null },
     };
 
     return (
@@ -64,7 +64,7 @@ const LocalUserVideoCard = ({ localName, showVideo, playAudio, setMediaStream })
                 <div className='cardContent' style={{ height: '100%', width: '100%' }}>
                     <div className='micDiv'>
                         <Avatar sx={{ background: '#3E4044', color: 'white' }} color='white' alt={'Mic'} size="sm" >
-                            {playAudio ? <IoMdMic /> : <IoMdMicOff />}
+                            {globalState.Mic ? <IoMdMic /> : <IoMdMicOff />}
                         </Avatar>
                     </div>
                     <div className='avatarDiv'>

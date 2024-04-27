@@ -1,10 +1,10 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Client } from "@stomp/stompjs";
 import SockJS from "sockjs-client";
-import LocalUserVideoCard from "./LocalUserVideoCard";
-import RemoteUserVideoCard from "./RemoteUserVideoCard";
+import LocalUserVideoCard from "./getLocalUserVideoCard";
+import RemoteUserVideoCard from "./getRemoteUserVideoCard";
 
-const VideoStreams = ({ username, meeting_id }) => {
+const VideoStreams = ({ username, meetingId }) => {
   const remoteVideoStreamsRef = useRef({});
   const remoteAudioStreamsRef = useRef({});
   const [usersConnection, setUsersConnection] = useState({});
@@ -16,14 +16,14 @@ const VideoStreams = ({ username, meeting_id }) => {
 
     stompClient.connect({}, () => {
       if (stompClient.connected) {
-        stompClient.subscribe(`/topic/currentMeetingUsers/${meeting_id}`, (msg) => {
+        stompClient.subscribe(`/topic/currentMeetingUsers/${meetingId}`, (msg) => {
           const currentMeetingUsers = JSON.parse(msg.body);
           currentMeetingUsers.forEach((user) => {
             addUserToUI(user.user_id, user.connectionId);
             createConnection(user.connectionId);
           });
         });
-        stompClient.subscribe(`/topic/sdpMessage/${meeting_id}`, (msg) => {
+        stompClient.subscribe(`/topic/sdpMessage/${meetingId}`, (msg) => {
           const { message, from_connid } = JSON.parse(msg.body);
           sdpProcess(message, from_connid);
         });
