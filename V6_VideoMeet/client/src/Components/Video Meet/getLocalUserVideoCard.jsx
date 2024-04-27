@@ -5,7 +5,7 @@ import styled from 'styled-components';
 import { IoMdMic, IoMdMicOff } from "react-icons/io";
 import Avatar from '@mui/joy/Avatar';
 
-const LocalUsersCard = ({ localName, showVideo, playAudio, setMediaStream }) => {
+const LocalUserVideoCard = ({ localName, showVideo, playAudio, setMediaStream }) => {
     const localVideoRef = useRef(null);
     const [localMediaStream, setLocalMediaStream] = useState(null);
 
@@ -79,7 +79,7 @@ const LocalUsersCard = ({ localName, showVideo, playAudio, setMediaStream }) => 
     );
 };
 
-export default LocalUsersCard;
+export default LocalUserVideoCard;
 
 const Wrapper = styled.div`
     width: 100%;
