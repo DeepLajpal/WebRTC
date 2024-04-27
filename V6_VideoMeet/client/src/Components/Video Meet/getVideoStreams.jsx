@@ -4,11 +4,11 @@ import SockJS from "sockjs-client";
 import LocalUserVideoCard from "./LocalUserVideoCard";
 import RemoteUserVideoCard from "./RemoteUserVideoCard";
 
-const VideoStreams = ({ username, meeting_id, iceConfig, sendSDPMessage }) => {
+const VideoStreams = ({ username, meeting_id }) => {
   const remoteVideoStreamsRef = useRef({});
   const remoteAudioStreamsRef = useRef({});
   const [usersConnection, setUsersConnection] = useState({});
-  const socketUrl = "http://localhost:3000";
+  const socketUrl = "http://localhost:8080/ws";
 
   useEffect(() => {
     const socket = new SockJS(socketUrl);
@@ -23,6 +23,10 @@ const VideoStreams = ({ username, meeting_id, iceConfig, sendSDPMessage }) => {
             createConnection(user.connectionId);
           });
         });
+        stompClient.subscribe(`/topic/sdpMessage/${meeting_id}`, (msg) => {
+          const { message, from_connid } = JSON.parse(msg.body);
+          sdpProcess(message, from_connid);
+        });
       }
     });
 
@@ -30,6 +34,22 @@ const VideoStreams = ({ username, meeting_id, iceConfig, sendSDPMessage }) => {
       stompClient.disconnect();
     };
   }, []);
+
+  const iceConfig = {
+    iceServers: [
+        {
+            urls: "stun:stun.l.google.com:19302",
+        },
+        {
+            urls: "stun:stun1.l.google.com:19302",
+        }
+    ]
+  };
+
+  const sendSDPMessage = (message, connId) => {
+    //to send the SDP message to the server using WebSockets
+    socket.send(`/topic/sdpMessage/${connId}`, {}, message);
+  };
 
   const addUserToUI = (other_username, connId) => {
     setUsersConnection((prevUsersConnection) => {
@@ -139,11 +159,8 @@ const VideoStreams = ({ username, meeting_id, iceConfig, sendSDPMessage }) => {
           {Object.keys(usersConnection).map(connId => (
             <RemoteUserVideoCard
               key={connId}
-              localName={usersConnection[connId].username}
-              showVideo={true}
-              playAudio={true}
+              remoteUserName={usersConnection[connId].username}
               stream={usersConnection[connId].stream}
-              connId={connId}
             />
           ))}
           <LocalUserVideoCard localName={username} />
