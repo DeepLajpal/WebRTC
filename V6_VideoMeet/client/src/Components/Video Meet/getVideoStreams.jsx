@@ -4,7 +4,7 @@ import SockJS from "sockjs-client";
 import LocalUserVideoCard from "./LocalUserVideoCard";
 import RemoteUserVideoCard from "./RemoteUserVideoCard";
 
-const VideoCall = ({ username, meeting_id, iceConfig, sendSDPMessage }) => {
+const VideoStreams = ({ username, meeting_id, iceConfig, sendSDPMessage }) => {
   const remoteVideoStreamsRef = useRef({});
   const remoteAudioStreamsRef = useRef({});
   const [usersConnection, setUsersConnection] = useState({});
@@ -154,4 +154,4 @@ const VideoCall = ({ username, meeting_id, iceConfig, sendSDPMessage }) => {
   );
 };
 
-export default VideoCall;
+export default VideoStreams;
