@@ -1,37 +1,18 @@
-import React, { useEffect } from 'react'
 import styled from 'styled-components';
 import ShowNav from '../Components/Video Meet/getNav';
 import GetMeetingInfo from '../Components/Video Meet/getMeetingInfo';
-import IconTabs from '../Components/Common/showTab';
-import GetUserInfo from '../Components/Video Meet/getUserInfo';
-import { useGlobalState } from '../ContextAPI/GlobalStateContext';
+
 
 const Home = () => {
 
-  const [tabValue, setTabValue] = React.useState(0);
-  const { globalState, updateGlobalState } = useGlobalState();
-
-  const handleTabChange = (newValue) => {
-    setTabValue(newValue);
-  };
-
-  console.log(globalState.loggedInUserData, 'globalState.loggedInUserData');
   return (
     <Wrapper>
-      <div className='startDiv' onClick={()=>handleTabChange(0)}>
+      {/* <WebSocketComponent /> */}
+      <div className='startDiv' >
         <ShowNav logoName={"Video Meet"} />
       </div>
-      {/* <div className='middleDiv'>
-        <IconTabs handleTabChange={handleTabChange} tabValue={tabValue} />
-      </div> */}
-      <div className='endDiv'>
-        {
-          // !tabValue
-            // ? <GetMeetingInfo handleTabChange={handleTabChange} />
-            // : <GetUserInfo handleTabChange={handleTabChange} />
-             <GetMeetingInfo handleTabChange={handleTabChange} />
-
-        }
+      <div className='middleDiv'>
+        <GetMeetingInfo />
       </div>
     </Wrapper>
   );
@@ -47,9 +28,5 @@ grid-template-rows: max-content 1fr;
 height:100%;
 width:100%;
 
-  .middleDiv{
-        justify-self: center;
-        height: fit-content;
-        align-self:end;
-  }
+
 `

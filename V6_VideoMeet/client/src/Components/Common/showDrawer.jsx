@@ -23,7 +23,7 @@ export default function ShowDrawer() {
       <DrawerHeading>Users: </DrawerHeading>
       <Divider />
       <List>
-        {['Aman', 'Deep', 'Rohit', 'Ramesh', 'Suresh', 'Mukesh'].map((text, index) => (
+        {['Deep', 'Rohit', 'Ramesh', 'Suresh', 'Mukesh', 'Suraj'].map((text, index) => (
           <ListItem key={text} disablePadding>
             <ListItemButton>
               <ListItemIcon>

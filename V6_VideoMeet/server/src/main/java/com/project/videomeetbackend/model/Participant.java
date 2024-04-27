@@ -33,5 +33,9 @@ public class Participant {
     @CreationTimestamp
     @Column(name = "created_at")
     private LocalDateTime createdAt;
+  
+    private String username;
+    private String connectionId; // Track connection ID for routing messages
+  
 
 }
