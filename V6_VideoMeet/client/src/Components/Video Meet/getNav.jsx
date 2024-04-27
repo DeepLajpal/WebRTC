@@ -9,15 +9,12 @@ import Container from '@mui/material/Container';
 import Avatar from '@mui/material/Avatar';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
-import GetModal from '../Common/getModal';
 
 const settings = ['View Profile', 'Logout'];
 
 const ShowNav = ({ logoName }) => {
 
     const [anchorElUser, setAnchorElUser] = React.useState(null);
-    const [showModal, setShowModal] = React.useState(false);
-
 
     const handleOpenUserMenu = (event) => {
         setAnchorElUser(event.currentTarget);
@@ -26,7 +23,6 @@ const ShowNav = ({ logoName }) => {
     const handleCloseUserMenu = (event) => {
         setAnchorElUser(null);
         if(event.currentTarget.textContent === "View Profile"){
-            setShowModal(()=>true)
             console.dir(event.currentTarget.textContent);
         }
     };

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Card from '@mui/joy/Card';
 import CardCover from '@mui/joy/CardCover';
 import styled from 'styled-components';
@@ -10,8 +10,7 @@ const LocalUsersCard = ({ localName, showVideo, playAudio, setMediaStream }) => 
     const [localMediaStream, setLocalMediaStream] = useState(null);
 
     const initializeMediaStream = async () => {
-        try {
-            
+        try {  
                const stream = await navigator.mediaDevices.getUserMedia({
                     video: {
                         width: 720,
