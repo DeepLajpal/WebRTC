@@ -1,70 +1,44 @@
 package com.project.videomeetbackend.controller;
 
-
-// import org.springframework.messaging.handler.annotation.MessageMapping;
-// import org.springframework.messaging.handler.annotation.Payload;
-// import org.springframework.messaging.handler.annotation.SendTo;
-// import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
-// import org.springframework.stereotype.Controller;
-
-// @Controller
-// public class ChatController {
-
-//     @MessageMapping("/chat.sendMessage")
-//     @SendTo("/topic/public")
-//     public ChatMessage sendMessage(
-//             @Payload ChatMessage chatMessage
-//     ) {
-//         return chatMessage;
-//     }
-
-//     @MessageMapping("/chat.addUser")
-//     @SendTo("/topic/public")
-//     public ChatMessage addUser(
-//             @Payload ChatMessage chatMessage,
-//             SimpMessageHeaderAccessor headerAccessor
-//     ) {
-//         // Add username in web socket session
-//         headerAccessor.getSessionAttributes().put("username", chatMessage.getSender());
-//         return chatMessage;
-//     }
-// }
-
+import com.project.videomeetbackend.dto.SdpMessage;
+import com.project.videomeetbackend.model.Meeting;
+import com.project.videomeetbackend.model.Participant;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.MessageMapping;
-import org.springframework.messaging.handler.annotation.SendTo;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
-import com.project.videomeetbackend.model.Participant;
-import com.project.videomeetbackend.repository.ParticipantRepository;
 
-import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Controller
 public class WebSocketController {
 
+    private final SimpMessagingTemplate messagingTemplate;
+    private final Map<String, Meeting> meetings = new ConcurrentHashMap<>();
+
     @Autowired
-    private ParticipantRepository participantRepository;
-
-    @MessageMapping("/join/{meetingId}")
-    @SendTo("/topic/meeting/{meetingId}")
-    public List<Participant> joinMeeting(Integer meetingId) {
-        List<Participant> existingParticipants = participantRepository.findByMeetingMeetingId(meetingId);
-        return existingParticipants;
+    public WebSocketController(SimpMessagingTemplate messagingTemplate) {
+        this.messagingTemplate = messagingTemplate;
     }
 
-    @MessageMapping("/sdpProcess")
+    @MessageMapping("/sdpMessage/{meetingId}")
     public void sdpProcess(SdpMessage sdpMessage) {
-        // Handle SDP message
+        String meetingId = sdpMessage.getMeetingId();
+        String message = sdpMessage.getMessage();
+
+        Meeting meeting = meetings.get(meetingId);
+        if (meeting != null) {
+            meeting.getParticipants().forEach(participant -> {
+                messagingTemplate.convertAndSendToUser(participant.getConnectionId(), "/topic/sdpProcess", message);
+            });
+        }
     }
 
-    // Other message mappings and methods to handle user interactions
-
-    static class SdpMessage {
-        private String message;
-        private String toConnId;
-        private String fromConnId;
-
-        // getters and setters
+    @MessageMapping("/currentMeetingUsers/{meetingId}")
+    public void currentMeetingUsers(String meetingId) {
+        Meeting meeting = meetings.computeIfAbsent(meetingId, Meeting::new);
+        messagingTemplate.convertAndSend("/topic/currentMeetingUsers/" + meetingId, meeting.getParticipants());
     }
+
 }
-
