@@ -30,15 +30,14 @@ public class WebSocketController {
         Meeting meeting = meetings.get(meetingId);
         if (meeting != null) {
             meeting.getParticipants().forEach(participant -> {
-                messagingTemplate.convertAndSendToUser(participant.getConnectionId(), "/topic/sdpProcess", message);
+                messagingTemplate.convertAndSendToUser(participant.getConnectionId(), "/topic/sdpProcess/" + meetingId, message);
             });
         }
     }
 
     @MessageMapping("/currentMeetingUsers/{meetingId}")
     public void currentMeetingUsers(String meetingId) {
-        Meeting meeting = meetings.computeIfAbsent(meetingId, Meeting::new);
+        Meeting meeting = meetings.computeIfAbsent(meetingId, id -> new Meeting(id));
         messagingTemplate.convertAndSend("/topic/currentMeetingUsers/" + meetingId, meeting.getParticipants());
     }
-
 }

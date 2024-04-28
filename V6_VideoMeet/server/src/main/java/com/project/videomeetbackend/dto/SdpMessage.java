@@ -1,5 +1,8 @@
 package com.project.videomeetbackend.dto;
 
+import lombok.Builder;
+
+@Builder
 public class SdpMessage {
     private String meetingId;
     private String message;
