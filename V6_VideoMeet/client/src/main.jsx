@@ -5,11 +5,11 @@ import {
   createBrowserRouter,
   RouterProvider,
 } from "react-router-dom";
-import HomePage from './views/HomePage.jsx';
-import MeetingPage from './views/MeetingPage.jsx';
-import ErrorPage from './views/ErrorPage.jsx';
+import HomePage from './Pages/HomePage.jsx';
+import MeetingPage from './Pages/MeetingPage.jsx';
+import ErrorPage from './Pages/ErrorPage.jsx';
 import { GlobalStateProvider } from './ContextAPI/GlobalStateContext.jsx';
-import AuthPage from './views/AuthPage.jsx';
+import AuthPage from './Pages/AuthPage.jsx';
 
 const router = createBrowserRouter([
   {
