@@ -88,7 +88,6 @@ const GetMeetingInfo = () => {
           Video Meet provides secure, easy-to-use video calls and meetings for everyone, on any device.
         </div>
 
-
         <div className='endDiv'>
 
           <div className='startMeetBtnDiv'>
